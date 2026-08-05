@@ -17,6 +17,9 @@ Route::post('/register', [RegisterController::class, 'register']);
 Route::get('/login', [LoginController::class, 'showLoginForm']);
 Route::post('/login', [LoginController::class, 'login']);
 
+//Logout
+Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth');
+
 Route::middleware(['auth','role:admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class,'admin']);
 });
