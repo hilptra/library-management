@@ -20,14 +20,26 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
+        $remember = $request->has('remember');
+
+        if (Auth::attempt($credentials, $remember)) {
+            if (Auth::user()->status === 'suspended') {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withErrors([
+                    'email' => 'Akun Anda sedang ditangguhkan. Silakan hubungi Pustakawan.',
+                ])->onlyInput('email');
+            }
+
             $request->session()->regenerate();
 
             if (Auth::user()->role === 'admin') {
-                return redirect('/dashboard');
+                return redirect()->intended('/dashboard')->with('success', 'Selamat datang kembali, ' . Auth::user()->name . '!');
             }
 
-            return redirect('/member/dashboard');
+            return redirect()->intended('/member/dashboard')->with('success', 'Selamat datang kembali, ' . Auth::user()->name . '!');
         }
 
         return back()->withErrors([
@@ -42,6 +54,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect('/login')->with('success', 'Anda telah berhasil keluar (logout).');
     }
 }
