@@ -9,7 +9,11 @@ class BookCopy extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['book_id', 'inventory_code', 'status'];
+    protected $fillable = [
+        'book_id', 
+        'inventory_code', 
+        'status'
+    ];
 
     // Cast enum status supaya konsisten
     protected $casts = [

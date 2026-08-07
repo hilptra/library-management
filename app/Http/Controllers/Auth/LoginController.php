@@ -36,7 +36,7 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             if (Auth::user()->role === 'admin') {
-                return redirect()->intended('/dashboard')->with('success', 'Selamat datang kembali, ' . Auth::user()->name . '!');
+                return redirect()->intended('/admin/dashboard')->with('success', 'Selamat datang kembali, ' . Auth::user()->name . '!');
             }
 
             return redirect()->intended('/member/dashboard')->with('success', 'Selamat datang kembali, ' . Auth::user()->name . '!');

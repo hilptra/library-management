@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Support\Facades\Route;
@@ -18,12 +19,17 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:5,1');
 });
 
-//Logout
+// Logout
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth');
 
-Route::middleware(['auth','role:admin'])->group(function () {
+// Admin Routes
+Route::middleware(['auth','role:admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class,'admin'])->name('admin.dashboard');
+    Route::resource('categories', CategoryController::class)->except(['create','show','edit']);
 });
+
+
+// Member Routes
 Route::middleware(['auth','role:member'])->group(function () {
     Route::get('/member/dashboard', [DashboardController::class,'member'])->name('member.dashboard');
 });
