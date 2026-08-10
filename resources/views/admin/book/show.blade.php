@@ -59,8 +59,58 @@
 
         {{-- Placeholder untuk BookCopy, dikerjakan di fitur berikutnya --}}
         <div class="bg-white shadow rounded p-6 mt-4">
-            <h2 class="font-bold mb-2">Eksemplar Buku</h2>
-            <p class="text-sm text-gray-400">Fitur pengelolaan eksemplar akan ditambahkan di tahap berikutnya.</p>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="font-bold">Eksemplar Buku</h2>
+                <form action="{{ route('books.copies.store', $book) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded text-sm">
+                        + Tambah Eksemplar
+                    </button>
+                </form>
+            </div>
+
+            @if ($book->copies->isEmpty())
+                <p class="text-sm text-gray-400">Belum ada eksemplar untuk buku ini.</p>
+            @else
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-gray-100 text-left">
+                            <th class="p-2">Kode Inventaris</th>
+                            <th class="p-2">Status</th>
+                            <th class="p-2">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($book->copies as $copy)
+                            <tr class="border-b">
+                                <td class="p-2">{{ $copy->inventory_code }}</td>
+                                <td class="p-2">
+                                    <form action="{{ route('copies.update', $copy) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <select name="status" onchange="this.form.submit()"
+                                            class="border rounded px-2 py-1">
+                                            @foreach (['available', 'reserved', 'borrowed', 'damaged', 'lost'] as $status)
+                                                <option value="{{ $status }}" @selected($copy->status === $status)>
+                                                    {{ ucfirst($status) }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </form>
+                                </td>
+                                <td class="p-2">
+                                    <form action="{{ route('copies.destroy', $copy) }}" method="POST"
+                                        onsubmit="return confirm('Yakin ingin menghapus eksemplar {{ $copy->inventory_code }}?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600">Hapus</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
         </div>
 
     </div>
