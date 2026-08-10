@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -26,6 +27,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth');
 Route::middleware(['auth','role:admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class,'admin'])->name('admin.dashboard');
     Route::resource('categories', CategoryController::class)->except(['create','show','edit']);
+    Route::resource('books', BookController::class);
 });
 
 

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Book;
 use App\Models\BookCopy;
+use App\Models\Category;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -14,65 +15,40 @@ class BookSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Buku Laskar Pelangi
-        $buku1 = Book::create([
-            'title'          => 'Laskar Pelangi',
-            'author'         => 'Andrea Hirata',
-            'isbn'           => '978-602-8346-56-0',
-            'publisher'      => 'Bentang Pustaka',
-            'published_year' => 2005,
-            'cover_image'    => null,
-            'description'    => 'Mengisahkan perjuangan 10 anak dari keluarga miskin di Belitung yang bersekolah di SD Muhammadiyah yang penuh keterbatasan, namun tetap memiliki semangat juang tinggi demi pendidikan.',
-        ]);
-        $buku1->categories()->attach([1, 7, 10]); // Fiksi, Sastra, Pendidikan
-        BookCopy::create(['book_id' => $buku1->id, 'inventory_code' => 'BK-LP-001', 'status' => 'available']);
-        BookCopy::create(['book_id' => $buku1->id, 'inventory_code' => 'BK-LP-002', 'status' => 'available']);
-        BookCopy::create(['book_id' => $buku1->id, 'inventory_code' => 'BK-LP-003', 'status' => 'borrowed']);
+        $booksData = [
 
+            [
+                'isbn' => '9786022916628',
+                'title' => 'Laskar Pelangi',
+                'author' => 'Andrea Hirata',
+                'publisher' => 'Bentang Pustaka',
+                'published_year' => '2005',
+                'description' => 'Laskar Pelangi adalah novel karya Andrea Hirata yang menceritakan kehidupan sepuluh anak dari keluarga sederhana di Belitung yang bersekolah di SD Muhammadiyah dengan berbagai keterbatasan. Mereka memiliki semangat belajar yang tinggi dan membentuk kelompok yang disebut Laskar Pelangi. Cerita menggambarkan persahabatan, perjuangan dalam memperoleh pendidikan, impian, serta semangat untuk menghadapi berbagai kesulitan hidup. Dengan tokoh-tokoh yang memiliki karakter unik, novel ini menunjukkan bahwa keterbatasan ekonomi bukanlah penghalang untuk memiliki cita-cita dan meraih masa depan. Laskar Pelangi juga mengangkat pentingnya pendidikan, persahabatan, kerja keras, dan keberanian dalam mengejar impian. Novel ini menjadi karya pertama Andrea Hirata dan pertama kali diterbitkan oleh Bentang Pustaka pada tahun 2005.',
+                'categories' => ['Fiksi','Sejarah'],
+            ],
+            
+            [
+                'isbn' => '9789799731234',
+                'title' => 'Bumi Manusia',
+                'author' => 'Pramoedya Ananta Toer',
+                'publisher' => 'Hasta Mitra',
+                'published_year' => '2005',
+                'description' => 'Bumi Manusia adalah novel karya Pramoedya Ananta Toer yang menjadi buku pertama dalam Tetralogi Buru. Novel ini berlatar Hindia Belanda pada awal abad ke-20 dan menceritakan kehidupan Minke, seorang pemuda pribumi yang memperoleh pendidikan Eropa dan mulai menyadari ketidakadilan serta ketimpangan sosial yang terjadi di masyarakat kolonial. Melalui kehidupan Minke, pembaca diajak melihat persoalan pendidikan, perbedaan kelas sosial, kolonialisme, diskriminasi, cinta, keluarga, serta perjuangan untuk mendapatkan kebebasan dan martabat sebagai manusia. Tokoh Nyai Ontosoroh juga menjadi salah satu tokoh penting yang menggambarkan keberanian, kemandirian, dan perlawanan terhadap sistem sosial yang menindas. Bumi Manusia tidak hanya menceritakan kisah kehidupan dan percintaan para tokohnya, tetapi juga menggambarkan kondisi masyarakat Indonesia pada masa penjajahan serta tumbuhnya kesadaran untuk melawan ketidakadilan. Novel ini merupakan bagian awal dari perjalanan Minke yang berlanjut dalam tiga novel berikutnya dalam Tetralogi Buru.',
+                'categories' => ['Fiksi','Sejarah'],
+            ]
+        ];
 
-        // 2. Buku Bumi Manusia
-        $buku2 = Book::create([
-            'title'          => 'Bumi Manusia',
-            'author'         => 'Pramoedya Ananta Toer',
-            'isbn'           => '978-979-97312-3-4',
-            'publisher'      => 'Lentera Dipantara',
-            'published_year' => 1980,
-            'cover_image'    => null,
-            'description'    => 'Novel sejarah yang mengisahkan perjuangan Minke, seorang pemuda pribumi di era kolonial Hindia Belanda, dalam mencari jati diri dan memperjuangkan hak-hak pribumi.',
-        ]);
-        $buku2->categories()->attach([1, 5, 7]); // Fiksi, Sejarah, Sastra
+        foreach ($booksData as $data) {
+            $categoryNames = $data['categories'];
+            unset($data['categories']);
 
-        BookCopy::create(['book_id' => $buku2->id, 'inventory_code' => 'BK-BM-001', 'status' => 'available']);
-        BookCopy::create(['book_id' => $buku2->id, 'inventory_code' => 'BK-BM-002', 'status' => 'available']);
+            $book = Book::firstOrCreate(
+                ['isbn' => $data['isbn']],
+                $data
+            );
 
-        // 3. Buku Filosofi Teras
-        $buku3 = Book::create([
-            'title'          => 'Filosofi Teras',
-            'author'         => 'Henry Manampiring',
-            'isbn'           => '978-602-424-694-5',
-            'publisher'      => 'Penerbit Buku Kompas',
-            'published_year' => 2018,
-            'cover_image'    => null,
-            'description'    => 'Penerapan praktis filsafat Stoisisme dalam kehidupan modern untuk membantu mengendalikan emosi negatif dan membangun mental yang tangguh.',
-        ]);
-        $buku3->categories()->attach([2, 10]); // Non-Fiksi, Pendidikan
-
-        BookCopy::create(['book_id' => $buku3->id, 'inventory_code' => 'BK-FT-001', 'status' => 'available']);
-        BookCopy::create(['book_id' => $buku3->id, 'inventory_code' => 'BK-FT-002', 'status' => 'available']);
-
-        // 4. Buku Clean Code
-        $buku4 = Book::create([
-            'title'          => 'Clean Code: A Handbook of Agile Software Craftsmanship',
-            'author'         => 'Robert C. Martin',
-            'isbn'           => '978-013-235088-4',
-            'publisher'      => 'Prentice Hall',
-            'published_year' => 2008,
-            'cover_image'    => null,
-            'description'    => 'Panduan profesional rekayasa perangkat lunak yang mengajarkan cara menulis kode program yang bersih, efisien, dan mudah dipelihara.',
-        ]);
-        $buku4->categories()->attach([4, 10]); // Teknologi, Pendidikan
-
-        BookCopy::create(['book_id' => $buku4->id, 'inventory_code' => 'BK-CC-001', 'status' => 'available']);
-        BookCopy::create(['book_id' => $buku4->id, 'inventory_code' => 'BK-CC-002', 'status' => 'available']);
+            $categoryIds = Category::whereIn('name', $categoryNames)->pluck('id');
+            $book->categories()->sync($categoryIds);
+        }
     }
 }
