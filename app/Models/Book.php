@@ -14,8 +14,8 @@ class Book extends Model
         'isbn',
         'publisher',
         'published_year',
+        'description',
         'cover_image',
-        'description'
     ];
     // Many-to-Many: 1 buku bisa punya banyak kategori, dan sebaliknya
     public function categories()
