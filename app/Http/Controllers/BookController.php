@@ -14,7 +14,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::with('categories')->latest()->get();
+        $books = Book::with('categories')->latest()->paginate(10);
         return view('admin.book.index', compact('books'));
     }
 

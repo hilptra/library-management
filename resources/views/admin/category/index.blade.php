@@ -50,7 +50,9 @@
                 @endforelse
             </tbody>
         </table>
-
+        <div class="mt-4">
+            {{ $categories->links() }}
+        </div>
 
         {{-- Modal --}}
         <div x-show="open" x-cloak class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
