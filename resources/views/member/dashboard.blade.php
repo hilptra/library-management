@@ -15,11 +15,6 @@
         <a href="{{ route('member.books.index') }}"
             class="inline-block text-sm bg-blue-500 text-white px-4 py-2 mb-4 rounded hover:bg-blue-700">Lihat Buku</a>
 
-        <form method="POST" action="/logout">
-            @csrf
-            <button type="submit" class="text-sm bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Logout</button>
-        </form>
-
 
     </div>
 @endsection
