@@ -11,6 +11,16 @@ use Illuminate\Support\Facades\Auth;
 
 class LoanController extends Controller
 {
+    public function index()
+    {
+        $loans = Loan::with('bookCopy.book')
+            ->where('user_id', Auth::id())
+            ->latest()
+            ->paginate(10);
+
+        return view('member.loan.index', compact('loans'));
+    }
+
     public function store(Request $request, Book $book) {
 
         // 1. Cek apakah user sudah punya pengajuan aktif untuk buku ini

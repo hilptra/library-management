@@ -1,83 +1,104 @@
 @extends('layouts.app')
 
-@section('title', 'Kelola Buku')
+@section('title', 'Kelola Buku - Perpustakaan Kota')
 
 @section('content')
-    <div class="max-w-6xl mx-auto mt-10 px-4">
+<div class="space-y-6 pt-2">
 
-        {{-- Flash message --}}
-        @if (session('success'))
-            <div class="bg-green-100 text-green-800 px-4 py-2 rounded mb-4">
-                {{ session('success') }}
-            </div>
-        @endif
+    {{-- Flash Message --}}
+    @if (session('success'))
+        <div class="bg-emerald-100 border border-emerald-300 text-emerald-800 text-sm px-4 py-3 rounded-xl shadow-2xs flex items-center justify-between">
+            <span>{{ session('success') }}</span>
+            <button onclick="this.parentElement.remove()" class="text-emerald-600 hover:text-emerald-900 font-bold">&times;</button>
+        </div>
+    @endif
 
-        <div class="flex justify-between items-center mb-4">
-            <h1 class="text-xl font-bold">Kelola Buku</h1>
-            <a href="{{ route('books.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded inline-block">
-                + Tambah Buku
+    {{-- Header --}}
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">Kelola Buku</h1>
+            <p class="text-slate-500 text-xs sm:text-sm font-medium mt-0.5">Daftar buku dan katalog Perpustakaan Kota</p>
+        </div>
+        <div>
+            <a href="{{ route('books.create') }}" class="bg-[#409a63] hover:bg-[#348353] text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-2xs hover:shadow-xs flex items-center gap-2 transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                </svg>
+                <span>+ Tambah Buku</span>
             </a>
         </div>
+    </div>
 
-        <table class="w-full bg-white shadow rounded">
-            <thead>
-                <tr class="bg-gray-200 text-left">
-                    <th class="p-3">Cover</th>
-                    <th class="p-3">Judul</th>
-                    <th class="p-3">Penulis</th>
-                    <th class="p-3">Kategori</th>
-                    <th class="p-3">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($books as $book)
-                    <tr class="border-b">
-                        <td class="p-3">
-                            @if ($book->cover_image)
-                                <img src="{{ Storage::url($book->cover_image) }}" alt="{{ $book->title }}"
-                                    class="w-12 h-16 object-cover rounded">
-                            @else
-                                <div
-                                    class="w-12 h-16 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">
-                                    N/A
+    {{-- Table Card --}}
+    <div class="bg-white rounded-2xl p-6 shadow-xs border border-slate-100/90 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm border-collapse">
+                <thead>
+                    <tr class="text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
+                        <th class="pb-3 px-4">Cover</th>
+                        <th class="pb-3 px-4">Judul Buku</th>
+                        <th class="pb-3 px-4">Penulis</th>
+                        <th class="pb-3 px-4">Kategori</th>
+                        <th class="pb-3 px-4 text-right">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50 font-medium">
+                    @forelse ($books as $book)
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="py-3.5 px-4">
+                                @if ($book->cover_image)
+                                    <img src="{{ Storage::url($book->cover_image) }}" alt="{{ $book->title }}"
+                                        class="w-12 h-16 object-cover rounded-lg shadow-2xs border border-slate-100">
+                                @else
+                                    <div class="w-12 h-16 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-100 flex items-center justify-center text-[10px] font-bold">
+                                        N/A
+                                    </div>
+                                @endif
+                            </td>
+                            <td class="py-3.5 px-4 font-bold text-slate-900">
+                                <a href="{{ route('books.show', $book) }}" class="hover:text-emerald-700 transition-colors">
+                                    {{ $book->title }}
+                                </a>
+                            </td>
+                            <td class="py-3.5 px-4 text-slate-600">{{ $book->author }}</td>
+                            <td class="py-3.5 px-4">
+                                <div class="flex flex-wrap gap-1">
+                                    @forelse ($book->categories as $category)
+                                        <span class="bg-[#dcfce7] text-[#166534] text-[11px] font-bold px-2.5 py-0.5 rounded-md">
+                                            {{ $category->name }}
+                                        </span>
+                                    @empty
+                                        <span class="text-xs text-slate-400 font-normal">Tanpa kategori</span>
+                                    @endforelse
                                 </div>
-                            @endif
-                        </td>
-                        <td class="p-3">
-                            <a href="{{ route('books.show', $book) }}" class="text-blue-600 hover:underline">
-                                {{ $book->title }}
-                            </a>
-                        </td>
-                        <td class="p-3">{{ $book->author }}</td>
-                        <td class="p-3">
-                            @forelse ($book->categories as $category)
-                                <span class="inline-block bg-gray-100 text-xs px-2 py-1 rounded mr-1">
-                                    {{ $category->name }}
-                                </span>
-                            @empty
-                                <span class="text-xs text-gray-400">Tanpa kategori</span>
-                            @endforelse
-                        </td>
-                        <td class="p-3">
-                            <a href="{{ route('books.edit', $book) }}" class="text-yellow-600">Edit</a>
+                            </td>
+                            <td class="py-3.5 px-4 text-right space-x-1">
+                                <a href="{{ route('books.edit', $book) }}" class="text-amber-600 hover:text-amber-800 text-xs font-bold px-2.5 py-1 rounded-lg hover:bg-amber-50 transition-colors inline-block">
+                                    Edit
+                                </a>
+                                <form action="{{ route('books.destroy', $book) }}" method="POST" class="inline"
+                                    onsubmit="return confirm('Yakin ingin menghapus buku {{ $book->title }}?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-rose-600 hover:text-rose-800 text-xs font-bold px-2.5 py-1 rounded-lg hover:bg-rose-50 transition-colors">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="py-8 text-center text-slate-400 font-medium">Belum ada buku</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
-                            <form action="{{ route('books.destroy', $book) }}" method="POST" class="inline"
-                                onsubmit="return confirm('Yakin ingin menghapus buku {{ $book->title }}?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 ml-2">Hapus</button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="p-3 text-center text-gray-500">Belum ada buku</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-        <div class="mt-4">
+        <div class="mt-4 pt-4 border-t border-slate-100">
             {{ $books->links() }}
         </div>
     </div>
+
+</div>
 @endsection

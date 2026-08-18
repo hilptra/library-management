@@ -50,4 +50,5 @@ Route::middleware(['auth', 'role:member'])->group(function () {
 
     Route::resource('member/books', MemberBookController::class)->only(['index', 'show'])->names('member.books');
     Route::post('/member/books/{book}/loans', [MemberLoanController::class, 'store'])->name('member.loans.store');
+    Route::get('/member/loans', [MemberLoanController::class, 'index'])->name('member.loans.index');
 });

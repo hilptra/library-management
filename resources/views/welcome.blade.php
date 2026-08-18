@@ -4,65 +4,65 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sistem Manajemen Perpustakaan</title>
+    <title>Perpustakaan Kota - Landing Page</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-gray-100 min-h-screen flex flex-col justify-between items-center p-6 text-gray-800">
-    <header class="w-full max-w-4xl flex items-center justify-between py-4">
-        <h1 class="text-xl font-bold text-gray-800">Perpustakaan</h1>
+<body class="bg-[#edf6f1] text-slate-800 antialiased font-sans min-h-screen flex flex-col justify-between p-6">
+    <header class="w-full max-w-5xl mx-auto flex items-center justify-between py-4">
+        <div>
+            <h1 class="text-emerald-950 font-extrabold text-2xl tracking-tight">Perpustakaan Kota</h1>
+            <p class="text-xs text-slate-500 font-medium">City Library Management System</p>
+        </div>
         @if (Route::has('login'))
-            <nav class="flex items-center gap-4">
+            <nav class="flex items-center gap-3 text-sm font-semibold">
                 @auth
                     @if (auth()->user()->role === 'admin')
                         <a href="{{ route('admin.dashboard') }}"
-                            class="px-4 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">Dashboard Admin</a>
+                            class="px-5 py-2.5 bg-[#409a63] hover:bg-[#348353] text-white rounded-xl shadow-2xs transition-all">Dashboard Admin</a>
                     @else
                         <a href="{{ route('member.dashboard') }}"
-                            class="px-4 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">Dashboard Member</a>
+                            class="px-5 py-2.5 bg-[#409a63] hover:bg-[#348353] text-white rounded-xl shadow-2xs transition-all">Dashboard Member</a>
                     @endif
                 @else
-                    <a href="{{ route('login') }}" class="text-sm text-gray-700 hover:text-black">Login</a>
+                    <a href="{{ route('login') }}" class="px-4 py-2 text-emerald-800 hover:text-emerald-950 transition-colors">Login</a>
                     @if (Route::has('register'))
                         <a href="{{ route('register') }}"
-                            class="px-4 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">Daftar</a>
+                            class="px-5 py-2.5 bg-[#409a63] hover:bg-[#348353] text-white rounded-xl shadow-2xs transition-all">Daftar</a>
                     @endif
                 @endauth
             </nav>
         @endif
     </header>
 
-    <main class="w-full max-w-4xl bg-white p-8 sm:p-12 rounded-lg shadow-md my-auto text-center">
-        <h2 class="text-3xl font-bold mb-4 text-gray-900">Selamat Datang di Sistem Manajemen Perpustakaan</h2>
-        <p class="text-gray-600 mb-8 max-w-lg mx-auto">
-            Temukan dan kelola koleksi buku perpustakaan dengan mudah. Silakan masuk atau mendaftar untuk mulai
-            menggunakan layanan perpustakaan.
+    <main class="w-full max-w-4xl mx-auto bg-white p-8 sm:p-14 rounded-2xl shadow-sm border border-slate-100 my-auto text-center">
+        <span class="inline-block bg-[#dcfce7] text-[#166534] text-xs font-bold px-3.5 py-1 rounded-full mb-4">Perpustakaan Digital</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold mb-4 text-slate-900 tracking-tight">Selamat Datang di Perpustakaan Kota</h2>
+        <p class="text-slate-500 mb-8 max-w-lg mx-auto text-sm sm:text-base font-medium">
+            Temukan ribuan koleksi buku digital, kelola peminjaman eksemplar fisik, dan pantau aktivitas perpustakaan secara real-time.
         </p>
-        <div class="flex items-center justify-center gap-4">
+        <div class="flex items-center justify-center gap-4 flex-wrap">
             @auth
                 @if (auth()->user()->role === 'admin')
                     <a href="{{ route('admin.dashboard') }}"
-                        class="px-6 py-2.5 bg-blue-600 text-white rounded hover:bg-blue-700 font-medium">Ke Dashboard
-                        Admin</a>
+                        class="px-6 py-3 bg-[#409a63] hover:bg-[#348353] text-white rounded-xl shadow-xs hover:shadow-md font-bold text-sm transition-all">Ke Dashboard Admin</a>
                 @else
                     <a href="{{ route('member.dashboard') }}"
-                        class="px-6 py-2.5 bg-blue-600 text-white rounded hover:bg-blue-700 font-medium">Ke Dashboard
-                        Member</a>
+                        class="px-6 py-3 bg-[#409a63] hover:bg-[#348353] text-white rounded-xl shadow-xs hover:shadow-md font-bold text-sm transition-all">Ke Dashboard Member</a>
                 @endif
             @else
                 <a href="{{ route('login') }}"
-                    class="px-6 py-2.5 bg-blue-600 text-white rounded hover:bg-blue-700 font-medium">Masuk Sekarang</a>
+                    class="px-6 py-3 bg-[#409a63] hover:bg-[#348353] text-white rounded-xl shadow-xs hover:shadow-md font-bold text-sm transition-all">Masuk Sekarang</a>
                 @if (Route::has('register'))
                     <a href="{{ route('register') }}"
-                        class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded hover:bg-gray-50 font-medium">Daftar
-                        Akun</a>
+                        class="px-6 py-3 border border-emerald-200 text-emerald-800 hover:bg-emerald-50 rounded-xl font-bold text-sm transition-colors">Daftar Akun</a>
                 @endif
             @endauth
         </div>
     </main>
 
-    <footer class="text-xs text-gray-500 py-4">
-        &copy; {{ date('Y') }} Sistem Manajemen Perpustakaan. All rights reserved.
+    <footer class="text-xs text-slate-400 text-center py-4">
+        &copy; {{ date('Y') }} Perpustakaan Kota. All rights reserved.
     </footer>
 </body>
 

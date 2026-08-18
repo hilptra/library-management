@@ -41,4 +41,14 @@ class Loan extends Model
     {
         return $this->belongsTo(BookCopy::class);
     }
+
+    public function statusBadgeClass(): string
+{
+    return match($this->status) {
+        'pending' => 'bg-yellow-100 text-yellow-800',
+        'borrowed' => 'bg-blue-100 text-blue-800',
+        'returned' => 'bg-green-100 text-green-800',
+        'rejected' => 'bg-red-100 text-red-800',
+    };
+}
 }
