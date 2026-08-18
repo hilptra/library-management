@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -54,7 +55,7 @@ class BookController extends Controller
             $book->categories()->attach($request->categories);
         }
 
-        return redirect()->route('books.index')->with('success','Buku berhasil ditambahkan');
+        return redirect()->route('admin.books.index')->with('success','Buku berhasil ditambahkan');
     }
 
     /**
@@ -105,7 +106,7 @@ class BookController extends Controller
         $book->update($validate);
         $book->categories()->sync($request->categories ?? []);
 
-        return redirect()->route('books.index')->with('success','Buku berhasil diupdate');
+        return redirect()->route('admin.books.index')->with('success','Buku berhasil diupdate');
     }
 
     /**
@@ -119,6 +120,6 @@ class BookController extends Controller
 
         $book->delete();
 
-        return redirect()->route('books.index')->with('success','Buku berhasil dihapus');
+        return redirect()->route('admin.books.index')->with('success','Buku berhasil dihapus');
     }
 }

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\BookCopy;
 use Illuminate\Http\Request;
@@ -48,7 +49,7 @@ class BookCopyController extends Controller
             return $code;
         });
 
-        return redirect()->route('books.show', $book)->with('success', 'Eksemplar berhasil ditambahkan: ' . $inventoryCode);
+        return redirect()->route('admin.books.show', $book)->with('success', 'Eksemplar berhasil ditambahkan: ' . $inventoryCode);
     }
 
     /**
@@ -80,7 +81,7 @@ class BookCopyController extends Controller
             'status' => $request->status
         ]);
 
-        return redirect()->route('books.show', $copy->book)->with('success','Status eksemplar berhasil diperbarui');
+        return redirect()->route('admin.books.show', $copy->book)->with('success','Status eksemplar berhasil diperbarui');
     }
 
     /**
@@ -91,7 +92,7 @@ class BookCopyController extends Controller
         $book = $copy->book;
         $copy->delete();
 
-        return redirect()->route('books.show', $book)->with('success','Eksemplar buku berhasil dihapus');
+        return redirect()->route('admin.books.show', $book)->with('success','Eksemplar buku berhasil dihapus');
     }
 
 }
