@@ -56,17 +56,30 @@
                 </div>
             @endif
 
-            <div class="pt-2">
-                <form action="{{ route('member.loans.store', $book) }}" method="POST" class="inline">
-                    @csrf
-                    <button type="submit"
-                        class="bg-[#409a63] hover:bg-[#348353] text-white font-bold text-sm px-6 py-2.5 rounded-xl shadow-2xs hover:shadow-xs transition-all flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                        </svg>
-                        <span>Ajukan Pinjam Buku</span>
+            <div class="pt-2 flex flex-wrap items-center gap-3">
+                @php
+                    $availableCount = $book->copies->where('status', 'available')->count();
+                @endphp
+                @if ($availableCount > 0)
+                    <form action="{{ route('member.loans.store', $book) }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit"
+                            class="bg-[#409a63] hover:bg-[#348353] text-white font-bold text-sm px-6 py-2.5 rounded-xl shadow-2xs hover:shadow-xs transition-all flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                            </svg>
+                            <span>Ajukan Pinjam Buku</span>
+                        </button>
+                    </form>
+                    <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
+                        Tersedia {{ $availableCount }} eksemplar
+                    </span>
+                @else
+                    <button type="button" disabled
+                        class="bg-slate-200 text-slate-500 font-bold text-sm px-6 py-2.5 rounded-xl cursor-not-allowed flex items-center gap-2">
+                        <span>Stok Eksemplar Tidak Tersedia</span>
                     </button>
-                </form>
+                @endif
             </div>
         </div>
     </div>

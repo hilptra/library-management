@@ -3,7 +3,7 @@
 @section('title', 'Kelola Kategori - Perpustakaan Kota')
 
 @section('content')
-    <div class="space-y-6 pt-2" x-data="{ open: false, mode: 'create', categoryId: null, categoryName: '', confirmDeleteOpen: false, deleteAction: '', deleteMessage: '' }">
+    <div class="space-y-6 pt-2" x-data="{ open: {{ $errors->any() ? 'true' : 'false' }}, mode: 'create', categoryId: null, categoryName: '{{ old('name') }}', confirmDeleteOpen: false, deleteAction: '', deleteMessage: '' }">
 
         {{-- Header --}}
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -39,7 +39,7 @@
                                 <td class="py-3.5 px-4 text-right space-x-2">
                                     <button
                                         @click="open = true; mode = 'edit'; categoryId = {{ $category->id }}; categoryName = '{{ addslashes($category->name) }}'"
-                                        class="text-yellow-600">Edit</button>
+                                        class="text-amber-600 hover:text-amber-800 text-xs font-bold px-2.5 py-1 rounded-lg hover:bg-amber-50 transition-colors">Edit</button>
                                     <button type="button"
                                         @click="confirmDeleteOpen = true; deleteAction = '{{ route('categories.destroy', $category) }}'; deleteMessage = 'Yakin menghapus kategori \'{{ addslashes($category->name) }}\'?'"
                                         class="text-rose-600 hover:text-rose-800 text-xs font-bold px-2.5 py-1 rounded-lg hover:bg-rose-50 transition-colors">
@@ -85,6 +85,9 @@
                         <input type="text" name="name" x-model="categoryName" placeholder="Masukkan nama kategori"
                             required
                             class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-colors">
+                        @error('name')
+                            <p class="text-xs text-rose-600 mt-1 font-medium">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="flex justify-end gap-2 pt-2">

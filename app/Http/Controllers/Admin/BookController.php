@@ -39,7 +39,7 @@ class BookController extends Controller
             'isbn' => 'required|string|unique:books,isbn',
             'publisher' => 'nullable|string|max:255',
             'published_year' => 'required|integer|min:1900|max:'.date('Y'),
-            'description' => 'nullable|string|',
+            'description' => 'nullable|string',
             'cover_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'categories' => 'nullable|array',
             'categories.*' => 'exists:categories,id'
@@ -55,7 +55,7 @@ class BookController extends Controller
             $book->categories()->attach($request->categories);
         }
 
-        return redirect()->route('admin.books.index')->with('success','Buku berhasil ditambahkan');
+        return redirect()->route('books.index')->with('success','Buku berhasil ditambahkan');
     }
 
     /**
@@ -106,7 +106,7 @@ class BookController extends Controller
         $book->update($validate);
         $book->categories()->sync($request->categories ?? []);
 
-        return redirect()->route('admin.books.index')->with('success','Buku berhasil diupdate');
+        return redirect()->route('books.index')->with('success','Buku berhasil diupdate');
     }
 
     /**
@@ -120,6 +120,6 @@ class BookController extends Controller
 
         $book->delete();
 
-        return redirect()->route('admin.books.index')->with('success','Buku berhasil dihapus');
+        return redirect()->route('books.index')->with('success','Buku berhasil dihapus');
     }
 }
