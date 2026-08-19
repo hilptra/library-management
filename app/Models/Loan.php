@@ -60,7 +60,7 @@ class Loan extends Model
         }
 
         $compareDate = ($this->return_date ?? now())->startOfDay();
-        $dueDate = $this->due_date->startOfDay();
+        $dueDate = $this->due_date->now();
 
         if ($compareDate->lte($dueDate)) {
             return 0;
