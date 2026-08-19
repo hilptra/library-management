@@ -3,16 +3,7 @@
 @section('title', $book->title . ' - Perpustakaan Kota')
 
 @section('content')
-    <div class="max-w-4xl mx-auto space-y-6 pt-2">
-
-        @if (session('success'))
-            <div
-                class="bg-emerald-100 border border-emerald-300 text-emerald-800 text-sm px-4 py-3 rounded-xl shadow-2xs flex items-center justify-between">
-                <span>{{ session('success') }}</span>
-                <button onclick="this.parentElement.remove()"
-                    class="text-emerald-600 hover:text-emerald-900 font-bold">&times;</button>
-            </div>
-        @endif
+    <div class="max-w-4xl mx-auto space-y-6 pt-2" x-data="{ confirmDeleteOpen: false, deleteAction: '', deleteMessage: '' }">
 
         <div>
             <a href="{{ route('books.index') }}"
@@ -128,15 +119,11 @@
                                         </form>
                                     </td>
                                     <td class="py-3.5 px-4 text-right">
-                                        <form action="{{ route('copies.destroy', $copy) }}" method="POST" class="inline"
-                                            onsubmit="return confirm('Yakin ingin menghapus eksemplar {{ $copy->inventory_code }}?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="text-rose-600 hover:text-rose-800 text-xs font-bold px-2 py-1 rounded-lg hover:bg-rose-50 transition-colors">
-                                                Hapus
-                                            </button>
-                                        </form>
+                                        <button type="button"
+                                            @click="confirmDeleteOpen = true; deleteAction = '{{ route('copies.destroy', $copy) }}'; deleteMessage = 'Yakin ingin menghapus eksemplar \'{{ addslashes($copy->inventory_code) }}\'?'"
+                                            class="text-rose-600 hover:text-rose-800 text-xs font-bold px-2 py-1 rounded-lg hover:bg-rose-50 transition-colors">
+                                            Hapus
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -144,6 +131,34 @@
                     </table>
                 </div>
             @endif
+        </div>
+
+        {{-- Alpine.js Modal Konfirmasi Hapus Eksemplar --}}
+        <div x-show="confirmDeleteOpen" x-cloak class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+            <div class="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-md shadow-xl border border-slate-100 space-y-4" @click.outside="confirmDeleteOpen = false">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 rounded-2xl bg-rose-50 text-rose-600 shrink-0">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-extrabold text-slate-900">Hapus Eksemplar</h3>
+                        <p class="text-xs text-slate-500 font-medium mt-1 leading-relaxed" x-text="deleteMessage"></p>
+                    </div>
+                </div>
+
+                <form method="POST" :action="deleteAction" class="flex justify-end gap-2 pt-2">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" @click="confirmDeleteOpen = false" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-2xs transition-colors">
+                        Hapus Eksemplar
+                    </button>
+                </form>
+            </div>
         </div>
 
     </div>

@@ -3,25 +3,7 @@
 @section('title', 'Catatan Peminjaman - Perpustakaan Kota')
 
 @section('content')
-    <div class="space-y-6 pt-2">
-
-        {{-- Flash Message --}}
-        @if (session('success'))
-            <div
-                class="bg-emerald-100 border border-emerald-300 text-emerald-800 text-sm px-4 py-3 rounded-xl shadow-2xs flex items-center justify-between">
-                <span>{{ session('success') }}</span>
-                <button onclick="this.parentElement.remove()"
-                    class="text-emerald-600 hover:text-emerald-900 font-bold">&times;</button>
-            </div>
-        @endif
-        @if (session('error'))
-            <div
-                class="bg-rose-100 border border-rose-300 text-rose-800 text-sm px-4 py-3 rounded-xl shadow-2xs flex items-center justify-between">
-                <span>{{ session('error') }}</span>
-                <button onclick="this.parentElement.remove()"
-                    class="text-rose-600 hover:text-rose-900 font-bold">&times;</button>
-            </div>
-        @endif
+    <div class="space-y-6 pt-2" x-data="{ confirmOpen: false, confirmAction: '', confirmMessage: '' }">
 
         {{-- Header --}}
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -135,15 +117,11 @@
                                     </td>
                                 @elseif ($status === 'borrowed')
                                     <td class="py-3.5 px-4 text-right">
-                                        <form action="{{ route('admin.loans.return', $loan) }}" method="POST"
-                                            onsubmit="return confirm('Tandai buku ini sebagai sudah dikembalikan?')">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit"
-                                                class="bg-emerald-50 text-emerald-800 hover:bg-emerald-100 text-xs font-bold px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors">
-                                                Tandai Kembali
-                                            </button>
-                                        </form>
+                                        <button type="button"
+                                            @click="confirmOpen = true; confirmAction = '{{ route('admin.loans.return', $loan) }}'; confirmMessage = 'Tandai buku \'{{ addslashes($loan->bookCopy->book->title ?? '') }}\' yang dipinjam oleh \'{{ addslashes($loan->user->name ?? '') }}\' sebagai sudah dikembalikan?'"
+                                            class="bg-emerald-50 text-emerald-800 hover:bg-emerald-100 text-xs font-bold px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors">
+                                            Tandai Kembali
+                                        </button>
                                     </td>
                                 @endif
                             </tr>
@@ -165,6 +143,34 @@
 
             <div class="mt-4 pt-4 border-t border-slate-100">
                 {{ $loans->links() }}
+            </div>
+        </div>
+
+        {{-- Modal Konfirmasi Pengembalian --}}
+        <div x-show="confirmOpen" x-cloak class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+            <div class="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-md shadow-xl border border-slate-100 space-y-4" @click.outside="confirmOpen = false">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 rounded-2xl bg-emerald-50 text-emerald-600 shrink-0">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-extrabold text-slate-900">Konfirmasi Pengembalian</h3>
+                        <p class="text-xs text-slate-500 font-medium mt-1 leading-relaxed" x-text="confirmMessage"></p>
+                    </div>
+                </div>
+
+                <form method="POST" :action="confirmAction" class="flex justify-end gap-2 pt-2">
+                    @csrf
+                    @method('PATCH')
+                    <button type="button" @click="confirmOpen = false" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#409a63] hover:bg-[#348353] text-white font-bold text-xs shadow-2xs transition-colors">
+                        Tandai Kembali
+                    </button>
+                </form>
             </div>
         </div>
 

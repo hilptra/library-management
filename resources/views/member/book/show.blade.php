@@ -5,13 +5,6 @@
 @section('content')
 <div class="max-w-4xl mx-auto space-y-6 pt-2">
 
-    @if (session('success'))
-        <div class="bg-emerald-100 border border-emerald-300 text-emerald-800 text-sm px-4 py-3 rounded-xl shadow-2xs flex items-center justify-between">
-            <span>{{ session('success') }}</span>
-            <button onclick="this.parentElement.remove()" class="text-emerald-600 hover:text-emerald-900 font-bold">&times;</button>
-        </div>
-    @endif
-
     <div>
         <a href="{{ route('member.books.index') }}" class="text-xs font-bold text-slate-500 hover:text-emerald-800 transition-colors">
             &larr; Kembali ke katalog buku
