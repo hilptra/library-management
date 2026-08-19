@@ -5,13 +5,6 @@
 @section('content')
 <div class="space-y-6 pt-2">
 
-    @if (session('success'))
-        <div class="bg-emerald-100 border border-emerald-300 text-emerald-800 text-sm px-4 py-3 rounded-xl shadow-2xs flex items-center justify-between">
-            <span>{{ session('success') }}</span>
-            <button onclick="this.parentElement.remove()" class="text-emerald-600 hover:text-emerald-900 font-bold">&times;</button>
-        </div>
-    @endif
-
     {{-- Welcome Banner --}}
     <div class="bg-white rounded-2xl p-6 lg:p-8 shadow-xs border border-slate-100/90 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>

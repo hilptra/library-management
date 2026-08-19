@@ -5,13 +5,6 @@
 @section('content')
 <div class="space-y-6 pt-2">
 
-    @if (session('success'))
-        <div class="bg-emerald-100 border border-emerald-300 text-emerald-800 text-sm px-4 py-3 rounded-xl shadow-2xs flex items-center justify-between">
-            <span>{{ session('success') }}</span>
-            <button onclick="this.parentElement.remove()" class="text-emerald-600 hover:text-emerald-900 font-bold">&times;</button>
-        </div>
-    @endif
-
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">Katalog Buku Perpustakaan</h1>

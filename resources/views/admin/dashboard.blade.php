@@ -1,19 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Overview - Perpustakaan Kota')
+@section('title', 'Perpustakaan Kota')
 
 @section('content')
     <div class="space-y-6">
-
-        {{-- Flash Message Success --}}
-        @if (session('success'))
-            <div
-                class="bg-emerald-100 border border-emerald-300 text-emerald-800 text-sm px-4 py-3 rounded-xl shadow-2xs flex items-center justify-between">
-                <span>{{ session('success') }}</span>
-                <button onclick="this.parentElement.remove()"
-                    class="text-emerald-600 hover:text-emerald-900 font-bold">&times;</button>
-            </div>
-        @endif
 
         {{-- Header Section --}}
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
@@ -59,14 +49,14 @@
                 <div class="mt-4">
                     <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Buku</span>
                     <h3 class="text-3xl lg:text-4xl font-extrabold text-slate-900 mt-1 tracking-tight">
-                        {{ $totalBooksCount > 0 ? number_format($totalBooksCount) : '12,450' }}
+                        {{ number_format($totalBooksCount) }}
                     </h3>
                 </div>
             </div>
 
             {{-- Card 2: Anggota Aktif --}}
-            <div
-                class="bg-white rounded-2xl p-5 shadow-xs border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow">
+            <a href="{{ route('admin.users.index') }}"
+                class="bg-white rounded-2xl p-5 shadow-xs border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow group">
                 <div class="flex items-center justify-between">
                     <div class="bg-[#dcfce7] p-2.5 rounded-xl text-[#15803d]">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,21 +65,20 @@
                         </svg>
                     </div>
                     <div
-                        class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-0.5">
+                        class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full flex items-center gap-1 group-hover:bg-emerald-100 transition-colors">
+                        <span>Kelola</span>
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
                         </svg>
-                        <span>+12</span>
                     </div>
                 </div>
                 <div class="mt-4">
                     <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Anggota Aktif</span>
                     <h3 class="text-3xl lg:text-4xl font-extrabold text-slate-900 mt-1 tracking-tight">
-                        {{ $activeMembersCount > 0 ? number_format($activeMembersCount) : '3,204' }}
+                        {{ number_format($activeMembersCount) }}
                     </h3>
                 </div>
-            </div>
+            </a>
 
             {{-- Card 3: Buku Dipinjam --}}
             <div
@@ -101,12 +90,12 @@
                                 d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                         </svg>
                     </div>
-                    <span class="text-xs font-semibold text-slate-400">Hari Ini</span>
+                    <span class="text-xs font-semibold text-slate-400">Aktif</span>
                 </div>
                 <div class="mt-4">
                     <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Buku Dipinjam</span>
                     <h3 class="text-3xl lg:text-4xl font-extrabold text-slate-900 mt-1 tracking-tight">
-                        {{ $booksBorrowedCount > 0 ? number_format($booksBorrowedCount) : '148' }}
+                        {{ number_format($booksBorrowedCount) }}
                     </h3>
                 </div>
             </div>
@@ -125,7 +114,7 @@
                 <div class="mt-4">
                     <span class="text-[11px] font-bold text-rose-500 uppercase tracking-wider">Keterlambatan</span>
                     <h3 class="text-3xl lg:text-4xl font-extrabold text-rose-600 mt-1 tracking-tight">
-                        {{ $overdueReturnsCount > 0 ? number_format($overdueReturnsCount) : '23' }}
+                        {{ number_format($overdueReturnsCount) }}
                     </h3>
                 </div>
             </div>
@@ -160,99 +149,43 @@
                         </thead>
                         <tbody class="divide-y divide-slate-50 font-medium">
 
-                            @if (isset($recentActivities) && $recentActivities->isNotEmpty())
-                                @foreach ($recentActivities as $loan)
-                                    <tr class="hover:bg-slate-50/50 transition-colors">
-                                        <td class="py-3.5 pr-4 flex items-center gap-3">
-                                            <div
-                                                class="w-9 h-9 rounded-full bg-[#86efac] text-[#166534] font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
-                                                {{ strtoupper(substr($loan->user->name ?? 'A', 0, 2)) }}
-                                            </div>
-                                            <span class="font-bold text-slate-900">{{ $loan->user->name ?? '-' }}</span>
-                                        </td>
-                                        <td class="py-3.5 px-4 text-slate-700">
-                                            {{ $loan->bookCopy->book->title ?? 'Judul Buku' }}
-                                        </td>
-                                        <td class="py-3.5 px-4 text-slate-500 text-xs">
-                                            {{ $loan->loan_date?->format('d M, H:i') ?? '24 Okt, 09:30' }}
-                                        </td>
-                                        <td class="py-3.5 pl-4 text-right">
-                                            @if ($loan->status === 'borrowed')
-                                                <span
-                                                    class="bg-[#dcfce7] text-[#15803d] text-xs font-bold px-3 py-1 rounded-full inline-block">Dipinjam</span>
-                                            @elseif ($loan->status === 'returned')
-                                                <span
-                                                    class="bg-emerald-100/70 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full inline-block">Dikembalikan</span>
-                                            @else
-                                                <span
-                                                    class="bg-rose-100 text-rose-600 text-xs font-bold px-3 py-1 rounded-full inline-block">Terlambat</span>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @else
-                                {{-- Sample Mockup Rows Matching Reference Image Exactly --}}
+                            @forelse ($recentActivities as $loan)
                                 <tr class="hover:bg-slate-50/50 transition-colors">
                                     <td class="py-3.5 pr-4 flex items-center gap-3">
                                         <div
                                             class="w-9 h-9 rounded-full bg-[#86efac] text-[#166534] font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
-                                            AS
+                                            {{ strtoupper(substr($loan->user->name ?? 'A', 0, 2)) }}
                                         </div>
-                                        <span class="font-bold text-slate-900">Ahmad Subagyo</span>
+                                        <span class="font-bold text-slate-900">{{ $loan->user->name ?? '-' }}</span>
                                     </td>
-                                    <td class="py-3.5 px-4 text-slate-700">The Design of Everyday Things</td>
-                                    <td class="py-3.5 px-4 text-slate-500 text-xs">24 Okt, 09:30</td>
+                                    <td class="py-3.5 px-4 text-slate-700">
+                                        {{ $loan->bookCopy->book->title ?? 'Judul Buku' }}
+                                    </td>
+                                    <td class="py-3.5 px-4 text-slate-500 text-xs">
+                                        {{ $loan->loan_date?->format('d M, H:i') ?? '-' }}
+                                    </td>
                                     <td class="py-3.5 pl-4 text-right">
-                                        <span
-                                            class="bg-[#dcfce7] text-[#15803d] text-xs font-bold px-3 py-1 rounded-full inline-block">Dipinjam</span>
+                                        @if ($loan->status === 'borrowed')
+                                            <span
+                                                class="bg-[#dcfce7] text-[#15803d] text-xs font-bold px-3 py-1 rounded-full inline-block">Dipinjam</span>
+                                        @elseif ($loan->status === 'returned')
+                                            <span
+                                                class="bg-emerald-100/70 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full inline-block">Dikembalikan</span>
+                                        @elseif ($loan->status === 'rejected')
+                                            <span
+                                                class="bg-rose-100 text-rose-600 text-xs font-bold px-3 py-1 rounded-full inline-block">Ditolak</span>
+                                        @else
+                                            <span
+                                                class="bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1 rounded-full inline-block">Pending</span>
+                                        @endif
                                     </td>
                                 </tr>
-                                <tr class="hover:bg-slate-50/50 transition-colors">
-                                    <td class="py-3.5 pr-4 flex items-center gap-3">
-                                        <div
-                                            class="w-9 h-9 rounded-full bg-[#86efac] text-[#166534] font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
-                                            BW
-                                        </div>
-                                        <span class="font-bold text-slate-900">Budi Wibowo</span>
-                                    </td>
-                                    <td class="py-3.5 px-4 text-slate-700">Sapiens: A Brief History</td>
-                                    <td class="py-3.5 px-4 text-slate-500 text-xs">24 Okt, 09:15</td>
-                                    <td class="py-3.5 pl-4 text-right">
-                                        <span
-                                            class="bg-emerald-100/70 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full inline-block">Dikembalikan</span>
-                                    </td>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="py-8 text-center text-slate-400 font-medium">Belum ada
+                                        aktivitas peminjaman terbaru</td>
                                 </tr>
-                                <tr class="hover:bg-slate-50/50 transition-colors">
-                                    <td class="py-3.5 pr-4 flex items-center gap-3">
-                                        <div
-                                            class="w-9 h-9 rounded-full bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
-                                            CL
-                                        </div>
-                                        <span class="font-bold text-slate-900">Citra Lestari</span>
-                                    </td>
-                                    <td class="py-3.5 px-4 text-slate-700">Atomic Habits</td>
-                                    <td class="py-3.5 px-4 text-slate-500 text-xs">23 Okt, 16:45</td>
-                                    <td class="py-3.5 pl-4 text-right">
-                                        <span
-                                            class="bg-[#dcfce7] text-[#15803d] text-xs font-bold px-3 py-1 rounded-full inline-block">Dipinjam</span>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-slate-50/50 transition-colors">
-                                    <td class="py-3.5 pr-4 flex items-center gap-3">
-                                        <div
-                                            class="w-9 h-9 rounded-full bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
-                                            DW
-                                        </div>
-                                        <span class="font-bold text-slate-900">Dewi Wijaya</span>
-                                    </td>
-                                    <td class="py-3.5 px-4 text-slate-700">Dune</td>
-                                    <td class="py-3.5 px-4 text-slate-500 text-xs">23 Okt, 14:20</td>
-                                    <td class="py-3.5 pl-4 text-right">
-                                        <span
-                                            class="bg-rose-100 text-rose-600 text-xs font-bold px-3 py-1 rounded-full inline-block">Terlambat</span>
-                                    </td>
-                                </tr>
-                            @endif
+                            @endforelse
 
                         </tbody>
                     </table>
@@ -266,117 +199,50 @@
                 <div>
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Anggota Baru</h2>
-                        <button class="text-slate-400 hover:text-slate-600 p-1">
+                        <a href="{{ route('admin.users.index') }}" class="text-slate-400 hover:text-slate-600 p-1">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
                             </svg>
-                        </button>
+                        </a>
                     </div>
 
                     <div class="space-y-4">
-                        @if (isset($newRegistrations) && $newRegistrations->isNotEmpty())
-                            @foreach ($newRegistrations as $member)
-                                <div
-                                    class="flex items-center justify-between p-2 hover:bg-slate-50/60 rounded-xl transition-colors">
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-10 h-10 rounded-full bg-[#86efac] text-[#166534] font-bold text-xs flex items-center justify-center shadow-2xs">
-                                            {{ strtoupper(substr($member->name, 0, 2)) }}
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-sm text-slate-900 leading-snug">{{ $member->name }}
-                                            </h4>
-                                            <p class="text-xs text-slate-500 font-medium">
-                                                Anggota &bull;
-                                                {{ $member->created_at ? $member->created_at->diffForHumans() : 'Bergabung baru saja' }}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <button
-                                        class="text-slate-400 hover:text-emerald-700 p-1.5 rounded-lg hover:bg-emerald-50 transition-colors">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            @endforeach
-                        @else
-                            {{-- Mockup Items Matching Reference Image --}}
+                        @forelse ($newRegistrations as $member)
                             <div
                                 class="flex items-center justify-between p-2 hover:bg-slate-50/60 rounded-xl transition-colors">
                                 <div class="flex items-center gap-3">
                                     <div
                                         class="w-10 h-10 rounded-full bg-[#86efac] text-[#166534] font-bold text-xs flex items-center justify-center shadow-2xs">
-                                        EF
+                                        {{ strtoupper(substr($member->name, 0, 2)) }}
                                     </div>
                                     <div>
-                                        <h4 class="font-bold text-sm text-slate-900 leading-snug">Eko Faisal</h4>
-                                        <p class="text-xs text-slate-500 font-medium">Pelajar &bull; Bergabung 2j yang lalu
+                                        <h4 class="font-bold text-sm text-slate-900 leading-snug">{{ $member->name }}
+                                        </h4>
+                                        <p class="text-xs text-slate-500 font-medium">
+                                            Anggota &bull;
+                                            {{ $member->created_at ? $member->created_at->diffForHumans() : 'Bergabung baru saja' }}
                                         </p>
                                     </div>
                                 </div>
-                                <button
+                                <a href="{{ route('admin.users.index') }}"
                                     class="text-slate-400 hover:text-emerald-700 p-1.5 rounded-lg hover:bg-emerald-50 transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                            d="M9 5l7 7-7 7" />
                                     </svg>
-                                </button>
+                                </a>
                             </div>
-
-                            <div
-                                class="flex items-center justify-between p-2 hover:bg-slate-50/60 rounded-xl transition-colors">
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-10 h-10 rounded-full bg-emerald-200 text-emerald-900 font-bold text-xs flex items-center justify-center shadow-2xs">
-                                        FR
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-sm text-slate-900 leading-snug">Fahmi Reza</h4>
-                                        <p class="text-xs text-slate-500 font-medium">Peneliti &bull; Bergabung 5j yang
-                                            lalu</p>
-                                    </div>
-                                </div>
-                                <button
-                                    class="text-slate-400 hover:text-emerald-700 p-1.5 rounded-lg hover:bg-emerald-50 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                                    </svg>
-                                </button>
-                            </div>
-
-                            <div
-                                class="flex items-center justify-between p-2 hover:bg-slate-50/60 rounded-xl transition-colors">
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-10 h-10 rounded-full bg-[#86efac] text-[#166534] font-bold text-xs flex items-center justify-center shadow-2xs">
-                                        GN
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-sm text-slate-900 leading-snug">Gita Nugraha</h4>
-                                        <p class="text-xs text-slate-500 font-medium">Umum &bull; Bergabung 1h yang lalu
-                                        </p>
-                                    </div>
-                                </div>
-                                <button
-                                    class="text-slate-400 hover:text-emerald-700 p-1.5 rounded-lg hover:bg-emerald-50 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                                    </svg>
-                                </button>
-                            </div>
-                        @endif
+                        @empty
+                            <p class="text-xs text-slate-400 font-medium py-6 text-center">Belum ada anggota baru</p>
+                        @endforelse
                     </div>
                 </div>
 
                 <div class="mt-6">
-                    <a href="{{ route('categories.index') }}"
+                    <a href="{{ route('admin.users.index') }}"
                         class="w-full py-2.5 border border-emerald-200/90 text-emerald-700 hover:bg-emerald-50 font-bold text-xs rounded-xl text-center flex items-center justify-center transition-colors shadow-2xs">
-                        Lihat Semua Pendaftaran
+                        Kelola Semua Member
                     </a>
                 </div>
 
