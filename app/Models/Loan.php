@@ -9,6 +9,8 @@ class Loan extends Model
 {
     use HasFactory;
 
+    const FINE_PER_DAY = 1000;
+
     protected $fillable = [
         'user_id',
         'book_copy_id',
@@ -43,12 +45,29 @@ class Loan extends Model
     }
 
     public function statusBadgeClass(): string
-{
-    return match($this->status) {
-        'pending' => 'bg-yellow-100 text-yellow-800',
-        'borrowed' => 'bg-blue-100 text-blue-800',
-        'returned' => 'bg-green-100 text-green-800',
-        'rejected' => 'bg-red-100 text-red-800',
-    };
-}
+    {
+        return match ($this->status) {
+            'pending' => 'bg-yellow-100 text-yellow-800',
+            'borrowed' => 'bg-blue-100 text-blue-800',
+            'returned' => 'bg-green-100 text-green-800',
+            'rejected' => 'bg-red-100 text-red-800',
+        };
+    }
+
+    public function calculateFine(): int {
+        
+        if (!$this->due_date) {
+            return 0;
+        }
+
+        $compareDate = $this->return_date ?? now();
+
+        if ($compareDate->lte($this->due_date)) {
+            return 0;
+        }
+
+        $daysLate = (int) floor($this->due_date->diffInDays($compareDate));
+
+        return $daysLate * self::FINE_PER_DAY;
+    }
 }

@@ -58,14 +58,17 @@ class LoanController extends Controller
         }
 
         DB::transaction(function () use ($loan) {
+            $fine = $loan->calculateFine();
+
             $loan->update([
                 'status' => 'returned',
                 'return_date' => now(),
-        ]);
+                'fine_amount' => $fine,
+            ]);
 
-        $loan->bookCopy->update(['status' => 'available']);
-    });
+            $loan->bookCopy->update(['status' => 'available']);
+        });
 
-        return back()->with('success', 'Buku berhasil ditandai sebagai dikembalikan.');
+        return back()->with('success', 'Buku berhasil dikembalikan.');
     }
 }
