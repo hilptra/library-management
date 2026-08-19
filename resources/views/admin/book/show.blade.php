@@ -81,7 +81,7 @@
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
                         </svg>
-                        <span>+ Tambah Eksemplar</span>
+                        <span>Tambah Eksemplar</span>
                     </button>
                 </form>
             </div>
@@ -134,12 +134,15 @@
         </div>
 
         {{-- Alpine.js Modal Konfirmasi Hapus Eksemplar --}}
-        <div x-show="confirmDeleteOpen" x-cloak class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-            <div class="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-md shadow-xl border border-slate-100 space-y-4" @click.outside="confirmDeleteOpen = false">
+        <div x-show="confirmDeleteOpen" x-cloak
+            class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+            <div class="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-md shadow-xl border border-slate-100 space-y-4"
+                @click.outside="confirmDeleteOpen = false">
                 <div class="flex items-start gap-4">
                     <div class="p-3 rounded-2xl bg-rose-50 text-rose-600 shrink-0">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                     </div>
                     <div>
@@ -151,10 +154,12 @@
                 <form method="POST" :action="deleteAction" class="flex justify-end gap-2 pt-2">
                     @csrf
                     @method('DELETE')
-                    <button type="button" @click="confirmDeleteOpen = false" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 transition-colors">
+                    <button type="button" @click="confirmDeleteOpen = false"
+                        class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 transition-colors">
                         Batal
                     </button>
-                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-2xs transition-colors">
+                    <button type="submit"
+                        class="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-2xs transition-colors">
                         Hapus Eksemplar
                     </button>
                 </form>

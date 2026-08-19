@@ -55,18 +55,18 @@ class Loan extends Model
     }
 
     public function calculateFine(): int {
-        
         if (!$this->due_date) {
             return 0;
         }
 
-        $compareDate = $this->return_date ?? now();
+        $compareDate = ($this->return_date ?? now())->startOfDay();
+        $dueDate = $this->due_date->startOfDay();
 
-        if ($compareDate->lte($this->due_date)) {
+        if ($compareDate->lte($dueDate)) {
             return 0;
         }
 
-        $daysLate = (int) floor($this->due_date->diffInDays($compareDate));
+        $daysLate = (int) $dueDate->diffInDays($compareDate);
 
         return $daysLate * self::FINE_PER_DAY;
     }
