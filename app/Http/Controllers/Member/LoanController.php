@@ -73,4 +73,23 @@ class LoanController extends Controller
 
         return redirect()->route('member.books.show', $book)->with('success', 'Pengajuan peminjaman berhasil dikirim, menunggu persetujuan admin.');
     }
+
+    public function cancel(Loan $loan)
+    {
+
+        if ($loan->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if ($loan->status !== 'pending') {
+            return back()->with('error', 'Tidak bisa membatalkan peminjaman yang sudah diproses');
+        }
+
+        DB::transaction(function () use ($loan) {
+            $loan->update(['status' => 'cancelled']);
+            $loan->bookCopy()->update(['status' => 'available']);
+        });
+
+        return back()->with('success', 'Peminjaman berhasil dibatalkan');
+    }
 }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('due_date')->nullable();
             $table->date('return_date')->nullable();
             $table->decimal('fine_amount', 10, 2)->default(0);
-            $table->enum('status', ['pending', 'borrowed', 'returned', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'borrowed', 'returned', 'rejected', 'cancelled'])->default('pending');
             $table->timestamps();
         });
     }
