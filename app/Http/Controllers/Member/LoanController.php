@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Member;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Loan;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -40,8 +41,10 @@ class LoanController extends Controller
             ->whereIn('status', ['pending', 'borrowed'])
             ->count();
 
-        if ($activeLoansCount >= Loan::MAX_LOAN) {
-            return back()->with('error', 'Anda sudah mencapai batas maksimum peminjaman.' . ' ' . Loan::MAX_LOAN . ' buku yang dipinjam atau diajukan.');
+        $maxActiveLoans = (int) Setting::get('max_active_loans', 3);
+
+        if ($activeLoansCount >= $maxActiveLoans) {
+            return back()->with('error', 'Anda sudah mencapai batas maksimum peminjaman.'.' '.$maxActiveLoans.' buku yang dipinjam atau diajukan.');
         }
 
         // 2. Cari BookCopy yang available, lock supaya aman dari race condition

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\BookCopyController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\LoanController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -47,10 +48,14 @@ Route::middleware(['auth', 'active', 'role:admin'])->prefix('admin')->group(func
     Route::patch('/loans/{loan}/reject', [LoanController::class, 'reject'])->name('admin.loans.reject');
     Route::patch('/loans/{loan}/return', [LoanController::class, 'return'])->name('admin.loans.return');
 
-    // User
+    // User Routes
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
     Route::patch('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
     Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
+
+    // Setting Routes
+    Route::get('/settings', [SettingController::class, 'index'])->name('admin.settings.index');
+    Route::patch('/settings', [SettingController::class, 'update'])->name('admin.settings.update');
 });
 
 // Member Routes

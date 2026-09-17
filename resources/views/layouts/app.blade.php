@@ -219,7 +219,7 @@
                         </a>
 
                         {{-- Pengaturan --}}
-                        <a href="#" :title="!sidebarOpen ? 'Pengaturan' : ''"
+                        <a href="{{ route('admin.settings.index') }}" :title="!sidebarOpen ? 'Pengaturan' : ''"
                             class="flex items-center gap-3 py-2.5 rounded-xl text-slate-600 hover:bg-emerald-100/50 hover:text-slate-900 transition-colors"
                             :class="sidebarOpen ? 'px-3.5' : 'justify-center px-0'">
                             <svg class="w-5 h-5 shrink-0 text-slate-500" fill="none" stroke="currentColor"

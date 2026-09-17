@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Loan;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -27,11 +28,13 @@ class LoanController extends Controller
             return back()->with('error', 'Peminjaman ini sudah diproses sebelumnya.');
         }
 
-        DB::transaction(function () use ($loan) {
+        $loanDurationDays = (int) Setting::get('loan_duration_days', 7);
+
+        DB::transaction(function () use ($loan, $loanDurationDays) {
             $loan->update([
                 'status' => 'borrowed',
                 'loan_date' => now(),
-                'due_date' => now()->addDays(7),
+                'due_date' => now()->addDays($loanDurationDays),
             ]);
 
             $loan->bookCopy->update(['status' => 'borrowed']);
