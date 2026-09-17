@@ -12,6 +12,56 @@
         </div>
     </div>
 
+    {{-- Search & Filter --}}
+    <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-xs border border-slate-100/90">
+        <form method="GET" class="space-y-4">
+            <div class="flex flex-col sm:flex-row gap-3">
+                <div class="relative flex-1">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    <input type="text" name="search" value="{{ request('search') }}"
+                        placeholder="Cari judul buku atau penulis..."
+                        class="w-full pl-10 pr-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 focus:bg-white transition-all">
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button type="submit"
+                        class="bg-[#409a63] hover:bg-[#348353] text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-2xs hover:shadow-xs flex items-center justify-center gap-2 transition-all">
+                        <span>Cari</span>
+                    </button>
+
+                    @if (request('search') || request('categories'))
+                        <a href="{{ route('member.books.index') }}"
+                            class="border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-colors">
+                            Reset
+                        </a>
+                    @endif
+                </div>
+            </div>
+
+            @if ($categories->count() > 0)
+                <div>
+                    <span class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Filter Kategori</span>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach ($categories as $category)
+                            <label
+                                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all select-none border-slate-200 bg-slate-50/70 text-slate-600 hover:bg-slate-100 has-[:checked]:bg-[#dcfce7] has-[:checked]:border-emerald-300 has-[:checked]:text-[#166534]">
+                                <input type="checkbox" name="categories[]" value="{{ $category->id }}"
+                                    @checked(collect(request('categories'))->contains($category->id)) onchange="this.form.submit()"
+                                    class="rounded border-slate-300 text-[#409a63] focus:ring-emerald-500/30">
+                                <span>{{ $category->name }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+        </form>
+    </div>
+
     {{-- Table Card --}}
     <div class="bg-white rounded-2xl p-6 shadow-xs border border-slate-100/90 overflow-hidden">
         <div class="overflow-x-auto">
