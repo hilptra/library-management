@@ -36,6 +36,14 @@ class LoanController extends Controller
             return back()->with('error', 'Anda masih memiliki peminjaman/pengajuan aktif untuk buku ini.');
         }
 
+        $activeLoansCount = Loan::where('user_id', Auth::id())
+            ->whereIn('status', ['pending', 'borrowed'])
+            ->count();
+
+        if ($activeLoansCount >= Loan::MAX_LOAN) {
+            return back()->with('error', 'Anda sudah mencapai batas maksimum peminjaman.' . ' ' . Loan::MAX_LOAN . ' buku yang dipinjam atau diajukan.');
+        }
+
         // 2. Cari BookCopy yang available, lock supaya aman dari race condition
         try {
             DB::transaction(function () use ($book) {

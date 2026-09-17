@@ -10,6 +10,7 @@ class Loan extends Model
     use HasFactory;
 
     const FINE_PER_DAY = 1000;
+    const MAX_LOAN = 3;
 
     protected $fillable = [
         'user_id',

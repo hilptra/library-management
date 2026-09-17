@@ -60,7 +60,7 @@
                         <div class="flex flex-wrap gap-2">
                             @foreach ($categories as $category)
                                 <label
-                                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all select-none border-slate-200 bg-slate-50/70 text-slate-600 hover:bg-slate-100 has-[:checked]:bg-[#dcfce7] has-[:checked]:border-emerald-300 has-[:checked]:text-[#166534]">
+                                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all select-none border-slate-200 bg-slate-50/70 text-slate-600 hover:bg-slate-100 has-checked:bg-[#dcfce7] has-checked:border-emerald-300 has-checked:text-[#166534]">
                                     <input type="checkbox" name="categories[]" value="{{ $category->id }}"
                                         @checked(collect(request('categories'))->contains($category->id)) onchange="this.form.submit()"
                                         class="rounded border-slate-300 text-[#409a63] focus:ring-emerald-500/30">
