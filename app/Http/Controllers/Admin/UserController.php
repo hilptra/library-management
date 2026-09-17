@@ -11,11 +11,26 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::where('role', 'member')
-            ->latest()
-            ->paginate(10);
+        $query = User::where('role', 'member');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%'.$search.'%')
+                    ->orWhere('email', 'like', '%'.$search.'%')
+                    ->orWhere('phone', 'like', '%'.$search.'%');
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $users = $query->latest()
+            ->paginate(10)
+            ->appends($request->query());
 
         return view('admin.user.index', compact('users'));
     }
@@ -57,7 +72,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-         $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
         ]);
@@ -67,7 +82,7 @@ class UserController extends Controller
             'phone' => $request->phone,
         ]);
 
-    return back()->with('success', 'Data member berhasil diperbarui.');
+        return back()->with('success', 'Data member berhasil diperbarui.');
     }
 
     /**
@@ -78,7 +93,8 @@ class UserController extends Controller
         //
     }
 
-    public function toggleStatus(User $user) {
+    public function toggleStatus(User $user)
+    {
         $newStatus = $user->status === 'active' ? 'suspended' : 'active';
         $user->update(['status' => $newStatus]);
 

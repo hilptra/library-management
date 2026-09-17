@@ -18,22 +18,22 @@ class BookController extends Controller
         $query = Book::with('categories');
 
         if ($request->filled('search')) {
-            $query->where('title','like','%'.$request->search.'%')
-            ->orWhere('author','like','%'.$request->search.'%')
-            ->orWhere('isbn','like','%'.$request->search.'%')
-            ->orWhere('publisher','like','%'.$request->search.'%');
+            $query->where('title', 'like', '%'.$request->search.'%')
+                ->orWhere('author', 'like', '%'.$request->search.'%')
+                ->orWhere('isbn', 'like', '%'.$request->search.'%')
+                ->orWhere('publisher', 'like', '%'.$request->search.'%');
         }
-        
+
         if ($request->filled('categories')) {
-            $query->whereHas('categories', function($q) use ($request) {
-               $q->whereIn('categories.id', $request->categories);
+            $query->whereHas('categories', function ($q) use ($request) {
+                $q->whereIn('categories.id', $request->categories);
             });
         }
 
         $books = $query->latest()->paginate(10)->appends($request->query());
         $categories = Category::orderBy('name')->get();
 
-        return view('admin.book.index', compact('books','categories'));
+        return view('admin.book.index', compact('books', 'categories'));
     }
 
     /**
@@ -42,6 +42,7 @@ class BookController extends Controller
     public function create()
     {
         $categories = Category::orderBy('name')->get();
+
         return view('admin.book.create', compact('categories'));
     }
 
@@ -59,7 +60,7 @@ class BookController extends Controller
             'description' => 'nullable|string',
             'cover_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'categories' => 'nullable|array',
-            'categories.*' => 'exists:categories,id'
+            'categories.*' => 'exists:categories,id',
         ]);
 
         if ($request->hasFile('cover_image')) {
@@ -72,7 +73,7 @@ class BookController extends Controller
             $book->categories()->attach($request->categories);
         }
 
-        return redirect()->route('books.index')->with('success','Buku berhasil ditambahkan');
+        return redirect()->route('books.index')->with('success', 'Buku berhasil ditambahkan');
     }
 
     /**
@@ -80,8 +81,8 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        $book->load('categories','copies');
-        
+        $book->load('categories', 'copies');
+
         return view('admin.book.show', compact('book'));
     }
 
@@ -93,7 +94,7 @@ class BookController extends Controller
         $categories = Category::orderBy('name')->get();
         $book->load('categories');
 
-        return view('admin.book.edit', compact('book','categories'));
+        return view('admin.book.edit', compact('book', 'categories'));
     }
 
     /**
@@ -110,20 +111,20 @@ class BookController extends Controller
             'description' => 'nullable|string',
             'cover_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'categories' => 'nullable|array',
-            'categories.*' => 'exists:categories,id'
+            'categories.*' => 'exists:categories,id',
         ]);
 
         if ($request->hasFile('cover_image')) {
             if ($book->cover_image) {
                 Storage::disk('public')->delete($book->cover_image);
             }
-            $validate['cover_image'] = $request->file('cover_image')->store('covers','public');
+            $validate['cover_image'] = $request->file('cover_image')->store('covers', 'public');
         }
 
         $book->update($validate);
         $book->categories()->sync($request->categories ?? []);
 
-        return redirect()->route('books.index')->with('success','Buku berhasil diupdate');
+        return redirect()->route('books.index')->with('success', 'Buku berhasil diupdate');
     }
 
     /**

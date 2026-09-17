@@ -15,9 +15,10 @@ class EnsureUserHasRole
      */
     public function handle(Request $request, Closure $next, string $role): Response
     {
-        if (!$request->user() || $request->user()->role !== $role) {
-            abort(403,'Anda tidak memiliki akses ke halaman ini');
+        if (! $request->user() || $request->user()->role !== $role) {
+            abort(403, 'Anda tidak memiliki akses ke halaman ini');
         }
+
         return $next($request);
     }
 }

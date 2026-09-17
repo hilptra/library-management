@@ -9,28 +9,30 @@ use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
-    public function showRegisterForm() {
+    public function showRegisterForm()
+    {
         return view('auth.register');
     }
 
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         $validate = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
-            'phone' => 'nullable|string|max:20'
-        ]); 
+            'phone' => 'nullable|string|max:20',
+        ]);
 
         $user = User::create([
             'name' => $validate['name'],
             'email' => $validate['email'],
             'password' => $validate['password'],
-            'phone'=> $validate['phone'] ?? null,
+            'phone' => $validate['phone'] ?? null,
             'role' => 'member',
         ]);
 
         Auth::login($user);
 
-        return redirect('/member/dashboard')->with('success', 'Pendaftaran berhasil! Selamat datang, ' . $user->name . '!');
+        return redirect('/member/dashboard')->with('success', 'Pendaftaran berhasil! Selamat datang, '.$user->name.'!');
     }
 }

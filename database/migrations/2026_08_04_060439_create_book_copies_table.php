@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('book_id')->constrained();
             $table->string('inventory_code')->unique();
-            $table->enum('status', ['available','reserved','borrowed','damaged','lost'])->default('available');
+            $table->enum('status', ['available', 'reserved', 'borrowed', 'damaged', 'lost'])->default('available');
             $table->timestamps();
         });
     }

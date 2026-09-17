@@ -9,21 +9,24 @@ use Illuminate\Http\Request;
 class CategoryController extends Controller
 {
     // Menampilkan daftar kategori
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $query = Category::query();
 
         if ($request->filled('search')) {
-            $query->where('name','like','%'.$request->search.'%');
+            $query->where('name', 'like', '%'.$request->search.'%');
         }
 
         $categories = $query->latest()->paginate(10)->appends($request->query());
+
         return view('admin.category.index', compact('categories'));
     }
 
     // Menyimpan kategori baru
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $request->validate([
-            'name'=> 'required|string|max:255|unique:categories,name',
+            'name' => 'required|string|max:255|unique:categories,name',
         ]);
 
         Category::create([
@@ -33,10 +36,11 @@ class CategoryController extends Controller
         return redirect()->back()->with('success', 'Kategori berhasil ditambahkan');
     }
 
-    // Memperbarui kategori 
-    public function update(Request $request, Category $category) {
+    // Memperbarui kategori
+    public function update(Request $request, Category $category)
+    {
         $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name,'. $category->id,
+            'name' => 'required|string|max:255|unique:categories,name,'.$category->id,
         ]);
 
         $category->update([
@@ -47,10 +51,10 @@ class CategoryController extends Controller
     }
 
     // Menghapus kategori
-    public function destroy(Category $category) {
+    public function destroy(Category $category)
+    {
         $category->delete();
 
         return redirect()->back()->with('success', 'Kategori berhasil dihapus');
     }
-
 }

@@ -36,10 +36,10 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             if (Auth::user()->role === 'admin') {
-                return redirect()->intended('/admin/dashboard')->with('success', 'Selamat datang kembali, ' . Auth::user()->name . '!');
+                return redirect()->intended('/admin/dashboard')->with('success', 'Selamat datang kembali, '.Auth::user()->name.'!');
             }
 
-            return redirect()->intended('/member/dashboard')->with('success', 'Selamat datang kembali, ' . Auth::user()->name . '!');
+            return redirect()->intended('/member/dashboard')->with('success', 'Selamat datang kembali, '.Auth::user()->name.'!');
         }
 
         return back()->withErrors([
@@ -47,7 +47,8 @@ class LoginController extends Controller
         ])->onlyInput('email');
     }
 
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
 
         Auth::logout();
 
