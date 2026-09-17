@@ -9,8 +9,14 @@ use Illuminate\Http\Request;
 class CategoryController extends Controller
 {
     // Menampilkan daftar kategori
-    public function index() {
-        $categories = Category::latest()->paginate(10);
+    public function index(Request $request) {
+        $query = Category::query();
+
+        if ($request->filled('search')) {
+            $query->where('name','like','%'.$request->search.'%');
+        }
+
+        $categories = $query->latest()->paginate(10)->appends($request->query());
         return view('admin.category.index', compact('categories'));
     }
 
