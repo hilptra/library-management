@@ -9,9 +9,6 @@ class Loan extends Model
 {
     use HasFactory;
 
-    const FINE_PER_DAY = 1000;
-    const MAX_LOAN = 3;
-
     protected $fillable = [
         'user_id',
         'book_copy_id',
@@ -61,15 +58,15 @@ class Loan extends Model
             return 0;
         }
 
-        $compareDate = ($this->return_date ?? now())->startOfDay();
-        $dueDate = $this->due_date->now();
+        $compareDate = $this->return_date ?? now();
 
-        if ($compareDate->lte($dueDate)) {
+        if ($compareDate->lte($this->due_date)) {
             return 0;
         }
 
-        $daysLate = (int) $dueDate->diffInDays($compareDate);
+        $daysLate = (int) floor($this->due_date->diffInDays($compareDate));
+        $finePerDay = (int) Setting::get('fine_per_day', 1000);
 
-        return $daysLate * self::FINE_PER_DAY;
+        return $daysLate * $finePerDay;
     }
 }
