@@ -28,7 +28,6 @@ class BookCopyController extends Controller
 
     /**
      * Store a newly created resource in storage.
-
      */
     public function store(Request $request, Book $book)
     {
@@ -39,7 +38,7 @@ class BookCopyController extends Controller
                 ->value('last_number');
 
             $nextNumber = ($lastNumber ?? 0) + 1;
-            $code = 'BOOK-' . $book->id . '-' . str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
+            $code = 'BOOK-'.$book->id.'-'.str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
 
             $book->copies()->create([
                 'inventory_code' => $code,
@@ -49,7 +48,7 @@ class BookCopyController extends Controller
             return $code;
         });
 
-        return redirect()->route('books.show', $book)->with('success', 'Eksemplar berhasil ditambahkan: ' . $inventoryCode);
+        return redirect()->route('books.show', $book)->with('success', 'Eksemplar berhasil ditambahkan: '.$inventoryCode);
     }
 
     /**
@@ -78,10 +77,10 @@ class BookCopyController extends Controller
         ]);
 
         $copy->update([
-            'status' => $request->status
+            'status' => $request->status,
         ]);
 
-        return redirect()->route('books.show', $copy->book)->with('success','Status eksemplar berhasil diperbarui');
+        return redirect()->route('books.show', $copy->book)->with('success', 'Status eksemplar berhasil diperbarui');
     }
 
     /**
@@ -92,7 +91,6 @@ class BookCopyController extends Controller
         $book = $copy->book;
         $copy->delete();
 
-        return redirect()->route('books.show', $book)->with('success','Eksemplar buku berhasil dihapus');
+        return redirect()->route('books.show', $book)->with('success', 'Eksemplar buku berhasil dihapus');
     }
-
 }

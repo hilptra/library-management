@@ -9,14 +9,15 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $query = Book::with('categories');
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('author', 'like', '%' . $request->search . '%')
-                  ->orWhere('publisher', 'like', '%' . $request->search . '%');
+                $q->where('title', 'like', '%'.$request->search.'%')
+                    ->orWhere('author', 'like', '%'.$request->search.'%')
+                    ->orWhere('publisher', 'like', '%'.$request->search.'%');
             });
         }
 
@@ -32,8 +33,9 @@ class BookController extends Controller
         return view('member.book.index', compact('books', 'categories'));
     }
 
-    public function show(Book $book) {
-        $book->load('categories','copies');
+    public function show(Book $book)
+    {
+        $book->load('categories', 'copies');
 
         return view('member.book.show', compact('book'));
     }

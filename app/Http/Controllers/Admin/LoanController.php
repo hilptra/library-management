@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Loan;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LoanController extends Controller
 {
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $status = $request->query('status', 'pending');
 
         $loans = Loan::with(['user', 'bookCopy.book'])
@@ -20,8 +21,8 @@ class LoanController extends Controller
         return view('admin.loan.index', compact('loans', 'status'));
     }
 
-
-    public function approve(Loan $loan) {
+    public function approve(Loan $loan)
+    {
         if ($loan->status !== 'pending') {
             return back()->with('error', 'Peminjaman ini sudah diproses sebelumnya.');
         }
@@ -33,13 +34,14 @@ class LoanController extends Controller
                 'due_date' => now()->addDays(7),
             ]);
 
-        $loan->bookCopy->update(['status' => 'borrowed']);
-    });
+            $loan->bookCopy->update(['status' => 'borrowed']);
+        });
 
         return back()->with('success', 'Peminjaman berhasil disetujui.');
     }
 
-    public function reject(Loan $loan) {
+    public function reject(Loan $loan)
+    {
         if ($loan->status !== 'pending') {
             return back()->with('error', 'Peminjaman ini sudah diproses sebelumnya.');
         }
@@ -52,7 +54,8 @@ class LoanController extends Controller
         return back()->with('success', 'Peminjaman berhasil ditolak.');
     }
 
-    public function return(Loan $loan) {
+    public function return(Loan $loan)
+    {
         if ($loan->status !== 'borrowed') {
             return back()->with('error', 'Peminjaman ini tidak dalam status dipinjam.');
         }

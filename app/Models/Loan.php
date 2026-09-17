@@ -25,8 +25,8 @@ class Loan extends Model
     // - date: string "2026-08-04" → Carbon object (bisa ->format(), ->diffInDays(), dll)
     // - decimal: string "10000.00" → float, presisi 2 angka di belakang koma
     protected $casts = [
-        'loan_date'   => 'date',
-        'due_date'    => 'date',
+        'loan_date' => 'date',
+        'due_date' => 'date',
         'return_date' => 'date',
         'fine_amount' => 'decimal:2',
     ];
@@ -54,8 +54,9 @@ class Loan extends Model
         };
     }
 
-    public function calculateFine(): int {
-        if (!$this->due_date) {
+    public function calculateFine(): int
+    {
+        if (! $this->due_date) {
             return 0;
         }
 

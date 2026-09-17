@@ -21,11 +21,12 @@ class LoanController extends Controller
         return view('member.loan.index', compact('loans'));
     }
 
-    public function store(Request $request, Book $book) {
+    public function store(Request $request, Book $book)
+    {
 
         // 1. Cek apakah user sudah punya pengajuan aktif untuk buku ini
         $existingLoan = Loan::where('user_id', Auth::id())
-            ->whereIn('status', ['pending','borrowed'])
+            ->whereIn('status', ['pending', 'borrowed'])
             ->whereHas('bookCopy', function ($query) use ($book) {
                 $query->where('book_id', $book->id);
             })
@@ -43,14 +44,14 @@ class LoanController extends Controller
                     ->lockForUpdate()
                     ->first();
 
-                if (!$availableCopy) {
+                if (! $availableCopy) {
                     throw new \Exception('Tidak ada eksemplar yang tersedia saat ini.');
                 }
 
                 Loan::create([
                     'user_id' => Auth::id(),
                     'book_copy_id' => $availableCopy->id,
-                    'status' => 'pending'
+                    'status' => 'pending',
                 ]);
 
                 $availableCopy->update(['status' => 'reserved']);

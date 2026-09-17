@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->foreignId('book_id')->constrained();
             $table->date('reservation_date');
-            $table->enum('status',['waiting','fulfilled','cancelled'])->default('waiting');
+            $table->enum('status', ['waiting', 'fulfilled', 'cancelled'])->default('waiting');
             $table->timestamps();
         });
     }

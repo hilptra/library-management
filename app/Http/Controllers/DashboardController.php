@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
-use App\Models\User;
 use App\Models\Loan;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
-    public function admin() {
+    public function admin()
+    {
         $totalBooksCount = Book::count();
         $activeMembersCount = User::where('role', 'member')->where('status', 'active')->count();
         $booksBorrowedCount = Loan::where('status', 'borrowed')->count();
@@ -38,8 +37,8 @@ class DashboardController extends Controller
         ));
     }
 
-    public function member() {
+    public function member()
+    {
         return view('member.dashboard');
     }
 }
-
