@@ -22,9 +22,10 @@
                     'borrowed' => 'Dipinjam',
                     'returned' => 'Dikembalikan',
                     'rejected' => 'Ditolak',
+                    'cancelled' => 'Dibatalkan',
                 ];
             @endphp
-            @foreach (['pending', 'borrowed', 'returned', 'rejected'] as $tabStatus)
+            @foreach (['pending', 'borrowed', 'returned', 'rejected', 'cancelled'] as $tabStatus)
                 <a href="{{ route('admin.loans.index', ['status' => $tabStatus]) }}"
                     class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $status === $tabStatus ? 'bg-[#409a63] text-white shadow-2xs' : 'bg-white text-slate-600 border border-slate-200/80 hover:bg-emerald-50' }}">
                     <span>{{ $labels[$tabStatus] ?? ucfirst($tabStatus) }}</span>
@@ -147,12 +148,15 @@
         </div>
 
         {{-- Modal Konfirmasi Pengembalian --}}
-        <div x-show="confirmOpen" x-cloak class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-            <div class="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-md shadow-xl border border-slate-100 space-y-4" @click.outside="confirmOpen = false">
+        <div x-show="confirmOpen" x-cloak
+            class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+            <div class="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-md shadow-xl border border-slate-100 space-y-4"
+                @click.outside="confirmOpen = false">
                 <div class="flex items-start gap-4">
                     <div class="p-3 rounded-2xl bg-emerald-50 text-emerald-600 shrink-0">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
                     <div>
@@ -164,10 +168,12 @@
                 <form method="POST" :action="confirmAction" class="flex justify-end gap-2 pt-2">
                     @csrf
                     @method('PATCH')
-                    <button type="button" @click="confirmOpen = false" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 transition-colors">
+                    <button type="button" @click="confirmOpen = false"
+                        class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 transition-colors">
                         Batal
                     </button>
-                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#409a63] hover:bg-[#348353] text-white font-bold text-xs shadow-2xs transition-colors">
+                    <button type="submit"
+                        class="px-5 py-2.5 rounded-xl bg-[#409a63] hover:bg-[#348353] text-white font-bold text-xs shadow-2xs transition-colors">
                         Tandai Kembali
                     </button>
                 </form>

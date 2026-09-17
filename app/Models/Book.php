@@ -19,7 +19,6 @@ class Book extends Model
         'cover_image',
     ];
 
-    // Many-to-Many: 1 buku bisa punya banyak kategori, dan sebaliknya
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'book_category', 'book_id', 'category_id')->withTimestamps();

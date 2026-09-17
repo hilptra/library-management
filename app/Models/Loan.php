@@ -19,9 +19,6 @@ class Loan extends Model
         'status',
     ];
 
-    // Cast tipe data supaya Laravel otomatis convert
-    // - date: string "2026-08-04" → Carbon object (bisa ->format(), ->diffInDays(), dll)
-    // - decimal: string "10000.00" → float, presisi 2 angka di belakang koma
     protected $casts = [
         'loan_date' => 'date',
         'due_date' => 'date',
@@ -29,14 +26,11 @@ class Loan extends Model
         'fine_amount' => 'decimal:2',
     ];
 
-    // belongsTo: setiap peminjaman milik 1 user (anggota yang meminjam)
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // belongsTo: setiap peminjaman terkait 1 eksemplar spesifik
-    // Bukan ke Book langsung, tapi ke BookCopy — karena yang dipinjam itu eksemplar fisiknya
     public function bookCopy()
     {
         return $this->belongsTo(BookCopy::class);
@@ -45,10 +39,11 @@ class Loan extends Model
     public function statusBadgeClass(): string
     {
         return match ($this->status) {
-            'pending' => 'bg-yellow-100 text-yellow-800',
-            'borrowed' => 'bg-blue-100 text-blue-800',
-            'returned' => 'bg-green-100 text-green-800',
-            'rejected' => 'bg-red-100 text-red-800',
+            'pending' => 'bg-amber-100 text-amber-800 border border-amber-200/60',
+            'borrowed' => 'bg-blue-100 text-blue-800 border border-blue-200/60',
+            'returned' => 'bg-emerald-100 text-emerald-800 border border-emerald-200/60',
+            'rejected' => 'bg-rose-100 text-rose-800 border border-rose-200/60',
+            'cancelled' => 'bg-slate-100 text-slate-600 border border-slate-200/60',
         };
     }
 
