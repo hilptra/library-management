@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Member\BookController as MemberBookController;
 use App\Http\Controllers\Member\LoanController as MemberLoanController;
+use App\Http\Controllers\Member\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -67,4 +68,10 @@ Route::middleware(['auth', 'active', 'role:member'])->group(function () {
     Route::post('/member/books/{book}/loans', [MemberLoanController::class, 'store'])->name('member.loans.store');
     Route::get('/member/loans', [MemberLoanController::class, 'index'])->name('member.loans.index');
     Route::patch('/member/loans/{loan}/cancel', [MemberLoanController::class, 'cancel'])->name('member.loans.cancel');
+
+    // Profile Routes
+    Route::get('/member/profile', [ProfileController::class, 'index'])->name('member.profile.index');
+    Route::get('/member/profile/edit', [ProfileController::class, 'edit'])->name('member.profile.edit');
+    Route::patch('/member/profile', [ProfileController::class, 'update'])->name('member.profile.update');
+    Route::patch('/member/profile/password', [ProfileController::class, 'updatePassword'])->name('member.profile.password');
 });
