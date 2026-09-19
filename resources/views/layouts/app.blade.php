@@ -284,6 +284,21 @@
 
             {{-- Footer Sidebar Actions --}}
             <div class="mt-8 pt-4 border-t border-emerald-100/80 space-y-1 text-sm font-medium">
+                <a href="{{ route('member.profile.index') }}" :title="!sidebarOpen ? 'Profil' : ''"
+                    class="flex items-center gap-3 py-2 rounded-xl transition-colors relative {{ request()->routeIs('member.profile.*') ? 'bg-[#dcfce7] text-[#166534] font-bold shadow-2xs' : 'text-slate-600 hover:bg-emerald-100/50 hover:text-slate-900' }}"
+                    :class="sidebarOpen ? 'px-3.5' : 'justify-center px-0'">
+                    @if (request()->routeIs('member.profile.*'))
+                        <span class="absolute left-0 top-2 bottom-2 w-1 bg-[#16a34a] rounded-r-full"></span>
+                    @endif
+                    <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('member.profile.*') ? 'text-[#16a34a]' : 'text-slate-500' }}"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span x-show="sidebarOpen" x-transition.opacity.duration.200ms
+                        class="whitespace-nowrap">Profil</span>
+                </a>
+
                 <a href="#" :title="!sidebarOpen ? 'Bantuan' : ''"
                     class="flex items-center gap-3 py-2 rounded-xl text-slate-600 hover:bg-emerald-100/50 hover:text-slate-900 transition-colors"
                     :class="sidebarOpen ? 'px-3.5' : 'justify-center px-0'">
@@ -341,6 +356,19 @@
                                 d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
+
+                    {{-- User Profile Avatar Icon
+                    <div class="flex items-center gap-2 pl-4 border-l border-emerald-200/60">
+                        <a href="{{ Auth::user()->role === 'member' ? route('member.profile.index') : '#' }}"
+                            class="w-8 h-8 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 font-bold flex items-center justify-center text-xs shadow-2xs hover:bg-emerald-200 transition-colors"
+                            title="Profil Saya">
+                            <svg class="w-5 h-5 text-emerald-700" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </a>
+                    </div> --}}
                 </div>
 
                 {{-- Header Right User Controls --}}
@@ -356,18 +384,6 @@
                         <span
                             class="absolute top-1 right-1 w-2 h-2 bg-emerald-500 rounded-full ring-2 ring-emerald-50"></span>
                     </button>
-
-                    {{-- User Profile Avatar Icon --}}
-                    <div class="flex items-center gap-2 pl-2 border-l border-emerald-200/60">
-                        <div
-                            class="w-8 h-8 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 font-bold flex items-center justify-center text-xs shadow-2xs">
-                            <svg class="w-5 h-5 text-emerald-700" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                        </div>
-                    </div>
 
                 </div>
 
