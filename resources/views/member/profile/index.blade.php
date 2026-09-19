@@ -93,9 +93,10 @@
             $totalLoans = Auth::user()->loans()->count();
             $activeLoans = Auth::user()->loans()->where('status', 'borrowed')->count();
             $returnedLoans = Auth::user()->loans()->where('status', 'returned')->count();
+            $cancelledLoans = Auth::user()->loans()->where('status', 'cancelled')->count();
         @endphp
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
             {{-- Total Peminjaman --}}
             <div class="bg-white rounded-2xl p-5 shadow-xs border border-slate-100/90 flex items-center justify-between">
                 <div>
@@ -137,6 +138,20 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+            </div>
+
+            {{-- Dibatalkan --}}
+            <div class="bg-white rounded-2xl p-5 shadow-xs border border-slate-100/90 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Dibatalkan</p>
+                    <h3 class="text-2xl font-extrabold text-slate-900 mt-1">{{ $cancelledLoans }} <span
+                            class="text-xs font-medium text-slate-500">Buku</span></h3>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M6 18L18 6" />
                     </svg>
                 </div>
             </div>
