@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\BookCopyController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\LoanController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
@@ -57,6 +58,10 @@ Route::middleware(['auth', 'active', 'role:admin'])->prefix('admin')->group(func
     // Setting Routes
     Route::get('/settings', [SettingController::class, 'index'])->name('admin.settings.index');
     Route::patch('/settings', [SettingController::class, 'update'])->name('admin.settings.update');
+
+    // Report Routes
+    Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports.index');
+    Route::get('/reports/export', [ReportController::class, 'export'])->name('admin.reports.export');
 });
 
 // Member Routes
