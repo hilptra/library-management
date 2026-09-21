@@ -1,8 +1,8 @@
 # Requirement Document — Sistem Manajemen Perpustakaan
 
-**Versi:** 1.0
-**Status:** Draft — Tahap Analisis
-**Terakhir diperbarui:** Agustus 2026
+**Versi:** 1.1  
+**Status:** Terimplementasi — Tahap Pengembangan Selesai  
+**Terakhir diperbarui:** September 2026  
 
 ---
 
@@ -13,12 +13,13 @@ Perpustakaan (sekolah/kampus kecil-menengah) masih mencatat peminjaman buku seca
 
 ### 1.2 Tujuan Aplikasi
 - Mendigitalisasi proses pencatatan buku, anggota, dan transaksi peminjaman/pengembalian.
-- Memudahkan pustakawan memantau stok buku dan keterlambatan.
-- Memudahkan anggota mencari ketersediaan buku tanpa harus datang langsung.
+- Memudahkan pustakawan memantau stok buku, pengajuan pinjaman, dan keterlambatan.
+- Memudahkan anggota mencari ketersediaan buku, mengajukan peminjaman, serta memiliki Kartu Anggota Digital ber-QR Code.
 
 ### 1.3 Skala Proyek (Asumsi Kerja)
 - Skala: perpustakaan sekolah/kampus kecil-menengah, cabang tunggal.
-- Denda keterlambatan dihitung otomatis oleh sistem; pembayaran dicatat manual oleh admin (tidak ada integrasi payment gateway pada versi MVP).
+- Denda keterlambatan dihitung otomatis oleh sistem berdasarkan tanggal jatuh tempo dan konfigurasi denda harian; pembayaran dicatat manual oleh admin.
+- Pengaturan durasi pinjam standar dan denda per hari dapat disesuaikan oleh Admin via menu Settings.
 - Tidak ada fitur reservasi antar-cabang.
 
 ---
@@ -27,10 +28,10 @@ Perpustakaan (sekolah/kampus kecil-menengah) masih mencatat peminjaman buku seca
 
 | Role | Deskripsi | Hak Akses Utama |
 |---|---|---|
-| **Admin/Pustakawan** | Mengelola data buku, anggota, transaksi | CRUD buku, kelola peminjaman, lihat laporan |
-| **Anggota (Member)** | Pengguna yang meminjam buku | Lihat katalog, cek status pinjaman, riwayat pinjam |
+| **Admin/Pustakawan** | Mengelola data buku, anggota, transaksi, dan pengaturan sistem | CRUD buku/kategori, kelola peminjaman (approve/reject/return), suspen anggota, kelola settings, ekspor laporan CSV |
+| **Anggota (Member)** | Pengguna yang meminjam buku | Lihat katalog, ajukan/batalkan peminjaman, lihat riwayat & status pinjaman, lihat Kartu Anggota Digital & QR Code ID |
 
-> Superadmin dan role tambahan lain sengaja tidak dimasukkan di MVP — dapat ditambahkan sebagai iterasi berikutnya setelah role inti stabil.
+> Catatan: Pengguna bertipe `admin` dan `member` juga memiliki status akun (`active` | `suspended`). Pengguna berstatus `suspended` ditolak aksesnya saat login.
 
 ---
 
@@ -39,36 +40,47 @@ Perpustakaan (sekolah/kampus kecil-menengah) masih mencatat peminjaman buku seca
 ### 3.1 Fitur Utama (Must-Have)
 
 **Autentikasi & Otorisasi**
-- Login/logout untuk Admin dan Anggota
-- Role-based access control
+- Login/logout untuk Admin dan Anggota (Hand-rolled auth)
+- Role-based access control (RBAC) via custom middleware `EnsureUserHasRole` & `EnsureUserIsActive`
+- Proteksi akun suspended saat login
 
-**Manajemen Buku (Admin)**
-- CRUD data buku (judul, penulis, kategori, ISBN, stok, cover gambar)
-- Kategori/genre buku
+**Manajemen Buku & Kategori (Admin)**
+- CRUD data buku (judul, penulis, ISBN, penerbit, tahun terbit, sinopsis, cover gambar)
+- Manajemen eksemplar fisik buku (`book_copies`) dengan status real-time (`available`, `reserved`, `borrowed`, `damaged`, `lost`)
+- Manajemen kategori/genre buku (relasi Many-to-Many via `book_category`)
 
 **Manajemen Anggota (Admin)**
-- CRUD data anggota
+- Daftar & pencarian data anggota
+- Toggle status keanggotaan (`active` / `suspended`)
 
-**Transaksi Peminjaman**
-- Pinjam buku (mengurangi stok)
-- Kembalikan buku (menambah stok)
-- Deteksi keterlambatan otomatis
-- Perhitungan denda otomatis
+**Transaksi Peminjaman & Pengembalian**
+- Pengajuan pinjam oleh Anggota (self-service; mengunci eksemplar ke status `reserved`)
+- Pembatalan pengajuan pinjam oleh Anggota saat status masih `pending`
+- Persetujuan (Approve) atau Penolakan (Reject) transaksi oleh Admin
+- Pengembalian buku oleh Admin (menghitung keterlambatan & denda real-time)
+
+**Kartu Anggota Digital & QR Code (Anggota)**
+- Tampilan Kartu Anggota Digital interaktif pada halaman Profil Anggota
+- QR Code ID unik berbasis `PERPUS-ID-{user_id}` yang dihasilkan secara real-time untuk verifikasi saat kunjungan perpustakaan
 
 **Pencarian & Filter**
-- Cari buku berdasarkan judul/penulis/kategori
-- Filter status ketersediaan
+- Cari buku berdasarkan judul, penulis, atau kategori
+- Filter status ketersediaan buku
+
+**Pengaturan Sistem & Laporan (Admin)**
+- Pengaturan durasi peminjaman standar (hari) dan tarif denda per hari
+- Laporan riwayat transaksi peminjaman dengan filter rentang tanggal dan status
+- Ekspor laporan transaksi ke format file CSV
 
 **Dashboard**
-- Admin: total buku, total anggota, buku sedang dipinjam, keterlambatan aktif
-- Anggota: buku sedang dipinjam, riwayat, denda (jika ada)
+- Admin: total buku, total anggota, peminjaman aktif, pengajuan pending
+- Anggota: ringkasan statistik pinjaman, buku sedang dipinjam, status pending, denda aktif
 
-### 3.2 Fitur Tambahan (Nice-to-Have)
-- Export laporan ke PDF/Excel
+### 3.2 Fitur Tambahan (Nice-to-Have / Future Scope)
+- Export laporan ke PDF / Excel terformat
 - Notifikasi email mendekati jatuh tempo
-- Rating/review buku oleh anggota
-- Log aktivitas admin (audit trail)
-- Reservasi buku saat stok kosong
+- Rating & review buku oleh anggota
+- Tabel `reservations` disiapkan di database untuk fitur antrean buku saat stok kosong
 
 ---
 
@@ -76,15 +88,19 @@ Perpustakaan (sekolah/kampus kecil-menengah) masih mencatat peminjaman buku seca
 
 | ID | Deskripsi |
 |---|---|
-| FR-01 | Sistem harus memungkinkan admin login menggunakan email & password |
-| FR-02 | Sistem harus memungkinkan admin menambah, mengubah, menghapus data buku |
-| FR-03 | Sistem harus mencegah peminjaman jika stok buku = 0 |
-| FR-04 | Sistem harus menghitung denda otomatis berdasarkan selisih hari dari tanggal jatuh tempo |
-| FR-05 | Sistem harus mencatat tanggal pinjam, tanggal jatuh tempo, dan tanggal kembali aktual pada setiap transaksi |
-| FR-06 | Anggota hanya dapat melihat data miliknya sendiri, tidak bisa mengakses data anggota lain |
-| FR-07 | Sistem harus menampilkan status ketersediaan buku secara real-time berdasarkan stok |
-
-*(Daftar ini akan bertambah seiring detail desain — setiap requirement baru mengikuti format ID berurutan agar mudah ditelusuri saat testing.)*
+| FR-01 | Sistem harus memungkinkan pengguna login menggunakan email & password sesuai role |
+| FR-02 | Sistem harus menolak login pengguna yang berstatus `suspended` |
+| FR-03 | Sistem harus memungkinkan admin melakukan CRUD pada data buku, eksemplar fisik, dan kategori |
+| FR-04 | Sistem harus mencegah peminjaman jika tidak ada eksemplar berstatus `available` |
+| FR-05 | Sistem harus mengalokasikan eksemplar ke status `reserved` saat anggota membuat pengajuan `pending` |
+| FR-06 | Sistem harus memungkinkan anggota membatalkan pengajuan berstatus `pending` dan mengembalikan status eksemplar ke `available` |
+| FR-07 | Sistem harus memungkinkan admin menyetujui (approve) atau menolak (reject) pengajuan pinjaman |
+| FR-08 | Sistem harus menghitung denda otomatis berdasarkan selisih hari dari tanggal jatuh tempo dan tarif denda aktif saat pengembalian diproses |
+| FR-09 | Sistem harus mencatat tanggal pinjam, tanggal jatuh tempo, dan tanggal kembali aktual pada setiap transaksi |
+| FR-10 | Anggota hanya dapat melihat data peminjaman dan profil miliknya sendiri |
+| FR-11 | Sistem harus menampilkan Kartu Anggota Digital ber-QR Code ID unik (`PERPUS-ID-{user_id}`) pada profil anggota |
+| FR-12 | Sistem harus memungkinkan admin mengatur durasi pinjam standar dan tarif denda harian via menu Settings |
+| FR-13 | Sistem harus memungkinkan admin mengekspor laporan transaksi peminjaman ke file CSV |
 
 ---
 
@@ -92,11 +108,11 @@ Perpustakaan (sekolah/kampus kecil-menengah) masih mencatat peminjaman buku seca
 
 | Aspek | Requirement |
 |---|---|
-| **Usability** | Antarmuka harus sederhana, dapat digunakan admin non-teknis |
-| **Security** | Password harus di-hash; validasi input dilakukan di sisi server |
-| **Performance** | Pencarian buku harus responsif untuk data hingga ±1000 judul |
-| **Maintainability** | Kode mengikuti struktur MVC Laravel standar |
-| **Portability** | Dapat dijalankan di lingkungan local (Laragon) dan di-deploy ke hosting/VPS |
+| **Usability** | Antarmuka bersih & modern dengan Tailwind CSS v4, responsif untuk perangkat mobile & desktop |
+| **Security** | Password di-hash menggunakan Laravel `hashed` cast (Bcrypt/Argon2); validasi server-side pada seluruh request; proteksi CSRF & rate-limiting pada auth |
+| **Performance** | Pencarian buku & pembuatan QR Code SVG/PNG cepat dan tidak membebani server |
+| **Maintainability** | Kode mengikuti arsitektur Laravel 12 MVC standar, clean code & linting dengan Laravel Pint |
+| **Portability** | Berjalan di lingkungan Laragon (MySQL) serta kompatibel dengan SQLite in-memory untuk pengujian unit |
 
 ---
 
@@ -105,8 +121,9 @@ Perpustakaan (sekolah/kampus kecil-menengah) masih mencatat peminjaman buku seca
 | Tanggal | Perubahan | Alasan |
 |---|---|---|
 | Agustus 2026 | Draft awal dibuat | Hasil sesi analisis kebutuhan tahap 1 |
+| September 2026 | Pembaharuan fitur: Kartu Anggota Digital QR Code, Pembatalan Pengajuan oleh Anggota, Pengaturan Sistem (Settings), Suspen Anggota, Ekspor CSV | Penyesuaian dengan implementasi sistem yang telah diselesaikan |
 
 ---
 
 ## Catatan
-Dokumen ini adalah rujukan resmi untuk tahap perancangan berikutnya (ERD, wireframe, user flow). Setiap perubahan scope proyek sebaiknya dicatat di bagian **Riwayat Perubahan** di atas, bukan langsung diubah tanpa jejak — ini membantu menjelaskan *kenapa* sebuah keputusan diambil saat proyek direview di kemudian hari (misalnya saat wawancara kerja).
+Dokumen ini adalah rujukan resmi yang selalu disesuaikan dengan arsitektur dan fungsionalitas sistem perpustakaan terkini.
