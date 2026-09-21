@@ -355,7 +355,7 @@
                         <div class="space-y-3 relative z-10">
                             <div class="flex items-center gap-3">
                                 <div
-                                    class="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm border border-white/20 text-white font-bold text-base flex items-center justify-center shrink-0">
+                                    class="w-11 h-11 rounded-xl bg-white/15 backdrop-blur-sm border border-white/20 text-white font-bold text-base flex items-center justify-center shrink-0">
                                     {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
                                 </div>
                                 <div class="overflow-hidden">
@@ -366,9 +366,18 @@
                             </div>
                         </div>
 
+                        {{-- QR Code Display --}}
+                        @if (isset($qrImage))
+                            <div
+                                class="mt-4 p-3 bg-white rounded-xl shadow-md border border-white/30 flex flex-col items-center justify-center relative z-10">
+                                <img src="{{ $qrImage }}" alt="QR Code ID Anggota" class="w-32 h-32 object-contain">
+                                <span class="text-[10px] font-mono font-bold text-slate-800 mt-1.5 tracking-wider">PERPUS-ID-{{ Auth::user()->id }}</span>
+                            </div>
+                        @endif
+
                         {{-- Card Footer & Code --}}
                         <div
-                            class="mt-6 pt-3 border-t border-white/15 flex items-end justify-between relative z-10 text-[10px]">
+                            class="mt-4 pt-3 border-t border-white/15 flex items-end justify-between relative z-10 text-[10px]">
                             <div>
                                 <p class="text-emerald-200 uppercase tracking-wider text-[8px]">ID Anggota</p>
                                 <p class="font-mono font-bold text-xs text-white">

@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Loan;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
@@ -40,7 +40,7 @@ class ReportController extends Controller
         ];
 
         $topBooks = $loans->groupBy('bookCopy.book.id')
-            ->map(fn($group) => [
+            ->map(fn ($group) => [
                 'book' => $group->first()->bookCopy->book,
                 'total' => $group->count(),
             ])
@@ -64,7 +64,7 @@ class ReportController extends Controller
             ->latest()
             ->get();
 
-        $filename = 'laporan-peminjaman-' . now()->format('Y-m-d') . '.csv';
+        $filename = 'laporan-peminjaman-'.now()->format('Y-m-d').'.csv';
 
         return response()->streamDownload(function () use ($loans) {
             $handle = fopen('php://output', 'w');
