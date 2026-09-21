@@ -15,7 +15,7 @@ class ProfileController extends Controller
 
         $user = Auth::user();
 
-        $qrData = 'PERPUS-ID-'.$user->id;
+        $qrData = route('admin.users.show', $user->id);
         $qrCode = new QrCode(
             data: $qrData,
             size: 200,
