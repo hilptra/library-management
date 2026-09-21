@@ -54,9 +54,17 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
-    {
-        //
+    public function show(User $user) {
+        $user->load('loans.bookCopy.book');
+
+        $loanStats = [
+            'total' => $user->loans->count(),
+            'borrowed' => $user->loans->where('status', 'borrowed')->count(),
+            'returned' => $user->loans->where('status', 'returned')->count(),
+            'totalFine' => $user->loans->sum('fine_amount'),
+        ];
+
+        return view('admin.user.show', compact('user', 'loanStats'));
     }
 
     /**

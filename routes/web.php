@@ -54,6 +54,7 @@ Route::middleware(['auth', 'active', 'role:admin'])->prefix('admin')->group(func
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
     Route::patch('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
     Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
 
     // Setting Routes
     Route::get('/settings', [SettingController::class, 'index'])->name('admin.settings.index');
@@ -80,3 +81,4 @@ Route::middleware(['auth', 'active', 'role:member'])->group(function () {
     Route::patch('/member/profile', [ProfileController::class, 'update'])->name('member.profile.update');
     Route::patch('/member/profile/password', [ProfileController::class, 'updatePassword'])->name('member.profile.password');
 });
+
