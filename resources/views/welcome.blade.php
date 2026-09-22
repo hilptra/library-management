@@ -5,18 +5,18 @@
 @section('content')
 
     {{-- Hero Section with Library Image, Full Viewport Height (100vh), and Extended Bottom Gradient --}}
-    <section class="relative min-h-screen lg:min-h-[100vh] flex items-center justify-center text-center px-6 lg:px-12 overflow-hidden bg-slate-900">
+    <section class="relative min-h-screen lg:min-h-screen flex items-center justify-center text-center px-6 lg:px-12 overflow-hidden bg-slate-900">
         {{-- Background Image --}}
         <div class="absolute inset-0 bg-cover bg-center bg-no-repeat transform scale-105 transition-transform duration-1000 ease-out"
             style="background-image: url('{{ asset('images/hero-library.jpg') }}');">
         </div>
 
         {{-- Dark Vignette & Atmospheric Overlays --}}
-        <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/45 to-transparent"></div>
+        <div class="absolute inset-0 bg-linear-to-b from-black/80 via-black/45 to-transparent"></div>
         <div class="absolute inset-0 bg-[#0f2417]/35 mix-blend-multiply"></div>
 
         {{-- Bottom Smooth Gradient Fading to Page Background (#ebf4ef) --}}
-        <div class="absolute inset-x-0 bottom-0 h-64 sm:h-80 lg:h-96 bg-gradient-to-t from-[#ebf4ef] via-[#ebf4ef]/70 to-transparent pointer-events-none"></div>
+        <div class="absolute inset-x-0 bottom-0 h-64 sm:h-80 lg:h-96 bg-linear-to-t from-[#ebf4ef] via-[#ebf4ef]/70 to-transparent pointer-events-none"></div>
 
         {{-- Content inside Hero --}}
         <div class="relative z-10 max-w-4xl mx-auto pt-36 pb-28">
