@@ -279,6 +279,34 @@
                             <span x-show="sidebarOpen" x-transition.opacity.duration.200ms
                                 class="whitespace-nowrap">Daftar Keinginan</span>
                         </a>
+
+                        <a href="{{ route('member.notifications.index') }}"
+                            :title="!sidebarOpen ? 'Notifikasi' : ''"
+                            class="flex items-center gap-3 py-2.5 rounded-xl transition-colors relative {{ request()->routeIs('member.notifications.*') ? 'bg-[#dcfce7] text-[#166534] font-bold shadow-2xs' : 'text-slate-600 hover:bg-emerald-100/50 hover:text-slate-900' }}"
+                            :class="sidebarOpen ? 'px-3.5' : 'justify-center px-0'">
+                            @if (request()->routeIs('member.notifications.*'))
+                                <span class="absolute left-0 top-2 bottom-2 w-1 bg-[#16a34a] rounded-r-full"></span>
+                            @endif
+                            <div class="relative shrink-0">
+                                <svg class="w-5 h-5 {{ request()->routeIs('member.notifications.*') ? 'text-[#16a34a]' : 'text-slate-500' }}"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                                @if (Auth::user()->unreadNotifications->count() > 0)
+                                    <span class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full"></span>
+                                @endif
+                            </div>
+                            <span x-show="sidebarOpen" x-transition.opacity.duration.200ms
+                                class="whitespace-nowrap flex-1 flex items-center justify-between">
+                                <span>Notifikasi</span>
+                                @if (Auth::user()->unreadNotifications->count() > 0)
+                                    <span class="px-1.5 py-0.5 text-[10px] font-bold bg-rose-100 text-rose-700 rounded-full">
+                                        {{ Auth::user()->unreadNotifications->count() }}
+                                    </span>
+                                @endif
+                            </span>
+                        </a>
                     @endif
                 </nav>
             </div>
@@ -378,15 +406,144 @@
                 <div class="flex items-center gap-4 self-end sm:self-center">
 
                     {{-- Notification Bell --}}
-                    <button
-                        class="relative p-1.5 text-slate-600 hover:text-emerald-700 rounded-full hover:bg-emerald-100/50 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                        </svg>
-                        <span
-                            class="absolute top-1 right-1 w-2 h-2 bg-emerald-500 rounded-full ring-2 ring-emerald-50"></span>
-                    </button>
+                    @php
+                        $userUnreadCount = Auth::user()->unreadNotifications->count();
+                        $recentNotifications = Auth::user()->notifications->take(5);
+                    @endphp
+                    <div x-data="{ notifOpen: false }" class="relative">
+                        <button @click="notifOpen = !notifOpen"
+                            class="relative p-2 text-slate-600 hover:text-emerald-700 rounded-xl hover:bg-emerald-50 transition-colors"
+                            title="Notifikasi">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                            @if ($userUnreadCount > 0)
+                                <span
+                                    class="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 bg-red-500 text-white text-[10px] font-extrabold rounded-full flex items-center justify-center ring-2 ring-white">
+                                    {{ $userUnreadCount > 9 ? '9+' : $userUnreadCount }}
+                                </span>
+                            @endif
+                        </button>
+
+                        <div x-show="notifOpen" x-cloak @click.outside="notifOpen = false"
+                            x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                            x-transition:leave="transition ease-in duration-150"
+                            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                            x-transition:leave-end="opacity-0 translate-y-2 scale-95"
+                            class="absolute right-0 mt-2 w-84 sm:w-96 bg-white rounded-2xl shadow-xl border border-slate-100 z-50 overflow-hidden divide-y divide-slate-100">
+
+                            {{-- Dropdown Header --}}
+                            <div class="px-4 py-3 bg-slate-50/70 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-bold text-sm text-slate-800">Notifikasi</span>
+                                    @if ($userUnreadCount > 0)
+                                        <span
+                                            class="px-2 py-0.5 text-[10px] font-bold bg-emerald-100 text-emerald-800 rounded-full">
+                                            {{ $userUnreadCount }} Baru
+                                        </span>
+                                    @endif
+                                </div>
+                                @if ($userUnreadCount > 0 && Auth::user()->role === 'member')
+                                    <form action="{{ route('member.notifications.markAllAsRead') }}" method="POST">
+                                        @csrf
+                                        <button type="submit"
+                                            class="text-xs font-semibold text-emerald-700 hover:text-emerald-800 hover:underline">
+                                            Tandai sudah dibaca
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+
+                            {{-- Notifications List --}}
+                            <div class="max-h-96 overflow-y-auto divide-y divide-slate-50">
+                                @forelse ($recentNotifications as $notification)
+                                    @php
+                                        $action = $notification->data['action'] ?? null;
+                                        $title = $notification->data['title'] ?? 'Pemberitahuan';
+                                        $message = $notification->data['message'] ?? '';
+                                        $isUnread = is_null($notification->read_at);
+                                    @endphp
+                                    <a href="{{ Auth::user()->role === 'member' ? route('member.notifications.open', $notification->id) : '#' }}"
+                                        class="block p-3.5 transition-colors {{ $isUnread ? 'bg-emerald-50/40 hover:bg-emerald-50/70' : 'bg-white hover:bg-slate-50' }}">
+                                        <div class="flex gap-3 items-start">
+                                            <div
+                                                class="w-8 h-8 rounded-xl shrink-0 flex items-center justify-center mt-0.5 {{ $action === 'approved' ? 'bg-emerald-100 text-emerald-700' : ($action === 'rejected' ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-700') }}">
+                                                @if ($action === 'approved')
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2" d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                @elseif ($action === 'rejected')
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                @else
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                                    </svg>
+                                                @endif
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center justify-between gap-1 mb-0.5">
+                                                    <p class="text-xs font-bold text-slate-800 truncate">{{ $title }}
+                                                    </p>
+                                                    @if ($isUnread)
+                                                        <span
+                                                            class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                                                    @endif
+                                                </div>
+                                                <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                                                    {{ $message }}</p>
+                                                <p
+                                                    class="text-[10px] font-medium text-slate-400 mt-1 flex items-center gap-1">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    {{ $notification->created_at->diffForHumans() }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                @empty
+                                    <div class="p-8 text-center">
+                                        <div
+                                            class="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-2">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                            </svg>
+                                        </div>
+                                        <p class="text-xs font-semibold text-slate-600">Tidak ada notifikasi baru</p>
+                                        <p class="text-[11px] text-slate-400 mt-0.5">Semua informasi aktivitas akan
+                                            tampil di sini</p>
+                                    </div>
+                                @endforelse
+                            </div>
+
+                            {{-- Dropdown Footer --}}
+                            @if (Auth::user()->role === 'member')
+                                <div class="p-2.5 bg-slate-50/70 text-center">
+                                    <a href="{{ route('member.notifications.index') }}"
+                                        class="text-xs font-bold text-emerald-700 hover:text-emerald-800 hover:underline">
+                                        Lihat Semua Notifikasi &rarr;
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
 
                 </div>
 

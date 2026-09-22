@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Loan;
 use App\Models\Setting;
+use App\Notifications\LoanStatusChanged;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -40,6 +41,8 @@ class LoanController extends Controller
             $loan->bookCopy->update(['status' => 'borrowed']);
         });
 
+        $loan->user->notify(new LoanStatusChanged($loan, 'approved'));
+
         return back()->with('success', 'Peminjaman berhasil disetujui.');
     }
 
@@ -53,6 +56,8 @@ class LoanController extends Controller
             $loan->update(['status' => 'rejected']);
             $loan->bookCopy->update(['status' => 'available']);
         });
+
+        $loan->user->notify(new LoanStatusChanged($loan, 'rejected'));
 
         return back()->with('success', 'Peminjaman berhasil ditolak.');
     }
@@ -74,6 +79,8 @@ class LoanController extends Controller
 
             $loan->bookCopy->update(['status' => 'available']);
         });
+
+        $loan->user->notify(new LoanStatusChanged($loan, 'returned'));
 
         return back()->with('success', 'Buku berhasil dikembalikan.');
     }

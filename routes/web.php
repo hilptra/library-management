@@ -12,11 +12,12 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Member\BookController as MemberBookController;
 use App\Http\Controllers\Member\LoanController as MemberLoanController;
+use App\Http\Controllers\Member\NotificationController;
 use App\Http\Controllers\Member\ProfileController;
 use App\Http\Controllers\Member\WishlistController;
+use App\Http\Controllers\Public\BookController as PublicBookController;
 use App\Http\Controllers\Public\HomeController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Public\BookController as PublicBookController;
 
 // Guest Routes (Hanya untuk pengguna yang belum login)
 Route::middleware('guest')->group(function () {
@@ -88,5 +89,12 @@ Route::middleware(['auth', 'active', 'role:member'])->group(function () {
     // Wishlist Routes
     Route::get('/member/wishlist', [WishlistController::class, 'index'])->name('member.wishlist.index');
     Route::post('/member/wishlist/{book}/toggle', [WishlistController::class, 'toggle'])->name('member.wishlist.toggle');
-});
 
+    // Notification Routes
+    Route::get('/member/notifications', [NotificationController::class, 'index'])->name('member.notifications.index');
+    Route::post('/member/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('member.notifications.markAllAsRead');
+    Route::patch('/member/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('member.notifications.read');
+    Route::get('/member/notifications/{id}/open', [NotificationController::class, 'open'])->name('member.notifications.open');
+    Route::delete('/member/notifications/clear', [NotificationController::class, 'clearAll'])->name('member.notifications.clearAll');
+    Route::delete('/member/notifications/{id}', [NotificationController::class, 'destroy'])->name('member.notifications.destroy');
+});
