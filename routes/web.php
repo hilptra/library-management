@@ -13,11 +13,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Member\BookController as MemberBookController;
 use App\Http\Controllers\Member\LoanController as MemberLoanController;
 use App\Http\Controllers\Member\ProfileController;
+use App\Http\Controllers\Public\HomeController;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('welcome');
-});
+use App\Http\Controllers\Public\BookController as PublicBookController;
 
 // Guest Routes (Hanya untuk pengguna yang belum login)
 Route::middleware('guest')->group(function () {
@@ -30,6 +28,11 @@ Route::middleware('guest')->group(function () {
 
 // Logout
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth');
+
+// Public Routes
+Route::get('/catalog', [PublicBookController::class, 'index'])->name('public.books.index');
+Route::get('/catalog/{book}', [PublicBookController::class, 'show'])->name('public.books.show');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Admin Routes
 Route::middleware(['auth', 'active', 'role:admin'])->prefix('admin')->group(function () {

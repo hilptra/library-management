@@ -108,20 +108,6 @@
                     </button>
                 </div>
 
-                {{-- Quick Loan Action Button (Admin) --}}
-                @if (Auth::user()->role === 'admin')
-                    <a href="{{ route('admin.loans.index') }}" :title="!sidebarOpen ? 'Peminjaman Cepat' : ''"
-                        class="w-full bg-[#409a63] hover:bg-[#348353] text-white font-semibold text-sm py-2.5 rounded-2xl shadow-sm hover:shadow-md flex items-center gap-2.5 transition-all mb-6 overflow-hidden"
-                        :class="sidebarOpen ? 'justify-start px-4' : 'justify-center px-0'">
-                        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M12 4v16m8-8H4" />
-                        </svg>
-                        <span x-show="sidebarOpen" x-transition.opacity.duration.200ms
-                            class="whitespace-nowrap">Peminjaman Cepat</span>
-                    </a>
-                @endif
-
                 {{-- Primary Navigation Links --}}
                 <nav class="space-y-1.5 font-medium text-sm">
                     @if (Auth::user()->role === 'admin')

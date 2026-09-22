@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Member;
+namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Book;
@@ -14,11 +14,7 @@ class BookController extends Controller
         $query = Book::with('categories');
 
         if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%'.$request->search.'%')
-                    ->orWhere('author', 'like', '%'.$request->search.'%')
-                    ->orWhere('publisher', 'like', '%'.$request->search.'%');
-            });
+            $query->where('title', 'like', '%' . $request->search . '%');
         }
 
         if ($request->filled('categories')) {
@@ -27,10 +23,10 @@ class BookController extends Controller
             });
         }
 
-        $books = $query->latest()->paginate(10)->appends($request->query());
+        $books = $query->latest()->paginate(12)->appends($request->query());
         $categories = Category::orderBy('name')->get();
 
-        return view('member.book.index', compact('books', 'categories'));
+        return view('public.books.index', compact('books', 'categories'));
     }
 
     public function show(Book $book)
@@ -49,6 +45,6 @@ class BookController extends Controller
             ->take(3)
             ->get();
 
-        return view('member.book.show', compact('book', 'availableCount', 'totalCopies', 'relatedBooks'));
+        return view('public.books.show', compact('book', 'availableCount', 'totalCopies', 'relatedBooks'));
     }
 }
