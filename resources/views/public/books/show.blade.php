@@ -1,33 +1,25 @@
-@extends('layouts.app')
+@extends('layouts.public')
 
-@section('title', $book->title . ' - Perpustakaan Kota')
+@section('title', $book->title . ' - City Library')
 
 @section('content')
-    <div class="max-w-5xl mx-auto space-y-10 pt-2">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 py-8 space-y-10">
 
         {{-- Breadcrumb --}}
-        <div class="flex items-center gap-2 text-xs text-slate-400 font-semibold">
-            <a href="{{ route('member.books.index') }}" class="hover:text-emerald-700 transition-colors">Katalog Buku</a>
+        <div class="flex items-center gap-2 text-xs text-slate-400 font-semibold mt-4">
+            <a href="{{ route('home') }}" class="hover:text-[#1b5e37] transition-colors">Beranda</a>
             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
             </svg>
-            <span class="text-slate-600 line-clamp-1">{{ $book->title }}</span>
+            <a href="{{ route('public.books.index') }}" class="hover:text-[#1b5e37] transition-colors">Katalog Buku</a>
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+            <span class="text-slate-600 line-clamp-1">Detail Buku ({{ $book->title }})</span>
         </div>
 
-        {{-- Flash Messages --}}
-        @if (session('success'))
-            <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold px-5 py-3 rounded-xl">
-                {{ session('success') }}
-            </div>
-        @endif
-        @if (session('error'))
-            <div class="bg-red-50 border border-red-200 text-red-800 text-sm font-semibold px-5 py-3 rounded-xl">
-                {{ session('error') }}
-            </div>
-        @endif
-
         {{-- ========== MAIN: TWO COLUMN LAYOUT ========== --}}
-        <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-8">
 
             {{-- ===== LEFT COLUMN: Cover + Status ===== --}}
             <div class="space-y-5">
@@ -39,7 +31,7 @@
                                 class="w-full h-auto object-contain rounded-xl">
                         @else
                             <div class="w-full aspect-2/3 flex flex-col items-center justify-center p-6 text-center">
-                                <svg class="w-14 h-14 text-emerald-600/30 mb-3" fill="none" stroke="currentColor"
+                                <svg class="w-16 h-16 text-emerald-600/30 mb-3" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                         d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
@@ -50,7 +42,7 @@
                         @endif
                     </div>
 
-                    {{-- Wishlist & Share --}}
+                    {{-- Action Buttons under cover --}}
                     <div class="flex gap-2 mt-4">
                         <button
                             class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all">
@@ -129,7 +121,7 @@
                         @endforelse
                     </div>
 
-                    <h1 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight mb-2">
+                    <h1 class="text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight mb-2">
                         {{ $book->title }}
                     </h1>
                     <p class="text-slate-500 font-semibold text-sm">
@@ -209,21 +201,18 @@
                         @endif
                     </div>
 
-                    {{-- CTA Button: Form POST untuk member --}}
+                    {{-- CTA Buttons --}}
                     <div class="flex flex-col sm:flex-row gap-3">
                         @if ($availableCount > 0)
-                            <form action="{{ route('member.loans.store', $book) }}" method="POST" class="flex-1">
-                                @csrf
-                                <button type="submit"
-                                    class="w-full bg-[#1c5d37] hover:bg-[#144729] text-white font-bold text-sm px-6 py-3 rounded-xl shadow-xs hover:shadow-md transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                                        </path>
-                                    </svg>
-                                    Ajukan Pinjam Buku Sekarang
-                                </button>
-                            </form>
+                            <a href="{{ route('login') }}"
+                                class="flex-1 bg-[#1c5d37] hover:bg-[#144729] text-white font-bold text-sm px-6 py-3 rounded-xl shadow-xs hover:shadow-md transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                    </path>
+                                </svg>
+                                Ajukan Pinjam Buku Sekarang
+                            </a>
                         @else
                             <button disabled
                                 class="flex-1 bg-slate-200 text-slate-500 font-bold text-sm px-6 py-3 rounded-xl cursor-not-allowed flex items-center justify-center gap-2">
@@ -238,7 +227,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        Pengajuan peminjaman akan dikonfirmasi oleh admin perpustakaan.
+                        Anda perlu mendaftar / login terlebih dahulu. Pengajuan akan dikonfirmasi oleh admin perpustakaan.
                     </p>
                 </div>
             </div>
@@ -248,7 +237,7 @@
         @if ($book->description)
             <div class="bg-white rounded-2xl shadow-xs border border-slate-100/80 overflow-hidden" x-data="{ activeTab: 'sinopsis' }">
                 <div class="border-b border-slate-100 px-6 pt-5">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">Informasi Lengkap</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">Informasi Lengkap Perpustakaan</p>
                     <h2 class="text-xl font-extrabold text-slate-900 mb-4">Tentang Buku</h2>
                     <div class="flex gap-1 overflow-x-auto">
                         <button @click="activeTab = 'sinopsis'"
@@ -264,11 +253,16 @@
                     </div>
                 </div>
 
+                {{-- Tab Content --}}
                 <div class="p-6">
+                    {{-- Sinopsis --}}
                     <div x-show="activeTab === 'sinopsis'" x-cloak>
-                        <p class="text-sm text-slate-700 leading-relaxed whitespace-pre-line">{{ $book->description }}</p>
+                        <div class="prose prose-sm prose-slate max-w-none">
+                            <p class="text-sm text-slate-700 leading-relaxed whitespace-pre-line">{{ $book->description }}</p>
+                        </div>
                     </div>
 
+                    {{-- Detail Teknis --}}
                     <div x-show="activeTab === 'detail'" x-cloak>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
@@ -316,12 +310,10 @@
             <div>
                 <div class="flex items-end justify-between mb-6">
                     <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Mungkin Kamu Menyukai
-                        </p>
-                        <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Buku Serupa yang Sering Dipinjam
-                        </h2>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Mungkin Kamu Menyukai</p>
+                        <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Buku Serupa yang Sering Dipinjam</h2>
                     </div>
-                    <a href="{{ route('member.books.index') }}"
+                    <a href="{{ route('public.books.index') }}"
                         class="text-xs font-bold text-[#1c5d37] hover:underline flex items-center gap-1 shrink-0">
                         Lihat Semua
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -333,7 +325,7 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
                     @foreach ($relatedBooks as $related)
-                        <a href="{{ route('member.books.show', $related) }}"
+                        <a href="{{ route('public.books.show', $related) }}"
                             class="bg-white rounded-2xl p-4 shadow-xs border border-slate-100/80 hover:shadow-lg hover:border-emerald-200 hover:-translate-y-1 transition-all duration-300 flex gap-4 group">
 
                             {{-- Cover mini --}}
