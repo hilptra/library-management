@@ -264,6 +264,21 @@
                             <span x-show="sidebarOpen" x-transition.opacity.duration.200ms
                                 class="whitespace-nowrap">Riwayat Peminjaman</span>
                         </a>
+                        <a href="{{ route('member.wishlist.index') }}"
+                            :title="!sidebarOpen ? 'Daftar Keinginan' : ''"
+                            class="flex items-center gap-3 py-2.5 rounded-xl transition-colors relative {{ request()->routeIs('member.wishlist.*') ? 'bg-[#dcfce7] text-[#166534] font-bold shadow-2xs' : 'text-slate-600 hover:bg-emerald-100/50 hover:text-slate-900' }}"
+                            :class="sidebarOpen ? 'px-3.5' : 'justify-center px-0'">
+                            @if (request()->routeIs('member.wishlist.*'))
+                                <span class="absolute left-0 top-2 bottom-2 w-1 bg-[#16a34a] rounded-r-full"></span>
+                            @endif
+                            <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('member.wishlist.*') ? 'text-[#16a34a]' : 'text-slate-500' }}"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                            <span x-show="sidebarOpen" x-transition.opacity.duration.200ms
+                                class="whitespace-nowrap">Daftar Keinginan</span>
+                        </a>
                     @endif
                 </nav>
             </div>

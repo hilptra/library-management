@@ -13,6 +13,20 @@
             </div>
         </div>
 
+        @if (session('success'))
+            <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold px-5 py-3 rounded-xl flex items-center justify-between">
+                <span>{{ session('success') }}</span>
+                <a href="{{ route('member.wishlist.index') }}" class="text-xs font-bold text-emerald-700 underline hover:text-emerald-800">
+                    Lihat Wishlist &rarr;
+                </a>
+            </div>
+        @endif
+        @if (session('error'))
+            <div class="bg-red-50 border border-red-200 text-red-800 text-sm font-semibold px-5 py-3 rounded-xl">
+                {{ session('error') }}
+            </div>
+        @endif
+
         {{-- Search & Filter --}}
         <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-xs border border-slate-100/90">
             <form method="GET" class="space-y-4">
@@ -111,10 +125,13 @@
                                     </div>
                                 </td>
                                 <td class="py-3.5 px-4 text-right">
-                                    <a href="{{ route('member.books.show', $book) }}"
-                                        class="bg-emerald-50 text-emerald-800 hover:bg-emerald-100 font-bold text-xs px-3.5 py-1.5 rounded-xl border border-emerald-200 transition-colors inline-block">
-                                        Lihat Detail
-                                    </a>
+                                    <div class="inline-flex items-center gap-2">
+                                        @include('member.partials.wishlist-button', ['book' => $book])
+                                        <a href="{{ route('member.books.show', $book) }}"
+                                            class="bg-emerald-50 text-emerald-800 hover:bg-emerald-100 font-bold text-xs px-3.5 py-1.5 rounded-xl border border-emerald-200 transition-colors inline-block">
+                                            Lihat Detail
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         @empty

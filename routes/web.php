@@ -13,6 +13,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Member\BookController as MemberBookController;
 use App\Http\Controllers\Member\LoanController as MemberLoanController;
 use App\Http\Controllers\Member\ProfileController;
+use App\Http\Controllers\Member\WishlistController;
 use App\Http\Controllers\Public\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Public\BookController as PublicBookController;
@@ -83,5 +84,9 @@ Route::middleware(['auth', 'active', 'role:member'])->group(function () {
     Route::get('/member/profile/edit', [ProfileController::class, 'edit'])->name('member.profile.edit');
     Route::patch('/member/profile', [ProfileController::class, 'update'])->name('member.profile.update');
     Route::patch('/member/profile/password', [ProfileController::class, 'updatePassword'])->name('member.profile.password');
+
+    // Wishlist Routes
+    Route::get('/member/wishlist', [WishlistController::class, 'index'])->name('member.wishlist.index');
+    Route::post('/member/wishlist/{book}/toggle', [WishlistController::class, 'toggle'])->name('member.wishlist.toggle');
 });
 
