@@ -4,26 +4,54 @@
 
 @section('content')
 
-    {{-- Hero Section --}}
-    <section
-        class="relative overflow-hidden py-24 px-6 lg:px-12 text-center bg-linear-to-b from-[#e3f0e8] via-[#ebf4ef] to-[#ebf4ef]">
-        {{-- Subtle decorative overlay/blur --}}
-        <div
-            class="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-white/60 via-transparent to-transparent opacity-80 pointer-events-none">
+    {{-- Hero Section with Library Image, Full Viewport Height (100vh), and Extended Bottom Gradient --}}
+    <section class="relative min-h-screen lg:min-h-[100vh] flex items-center justify-center text-center px-6 lg:px-12 overflow-hidden bg-slate-900">
+        {{-- Background Image --}}
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat transform scale-105 transition-transform duration-1000 ease-out"
+            style="background-image: url('{{ asset('images/hero-library.jpg') }}');">
         </div>
 
-        <div class="relative max-w-4xl mx-auto">
-            <h1 class="text-3xl sm:text-5xl font-extrabold text-[#174e2d] tracking-tight mb-5 leading-tight">
+        {{-- Dark Vignette & Atmospheric Overlays --}}
+        <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/45 to-transparent"></div>
+        <div class="absolute inset-0 bg-[#0f2417]/35 mix-blend-multiply"></div>
+
+        {{-- Bottom Smooth Gradient Fading to Page Background (#ebf4ef) --}}
+        <div class="absolute inset-x-0 bottom-0 h-64 sm:h-80 lg:h-96 bg-gradient-to-t from-[#ebf4ef] via-[#ebf4ef]/70 to-transparent pointer-events-none"></div>
+
+        {{-- Content inside Hero --}}
+        <div class="relative z-10 max-w-4xl mx-auto pt-36 pb-28">
+            {{-- Welcome Pill Badge --}}
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white text-xs font-semibold mb-6 shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Selamat Datang di City Library</span>
+            </div>
+
+            {{-- Main Title --}}
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6 leading-tight drop-shadow-lg">
                 Jendela Dunia di Jantung Kota
             </h1>
-            <p class="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto mb-9 leading-relaxed">
-                Temukan ribuan koleksi buku, nikmati layanan digital tanpa batas, dan jadilah bagian dari komunitas literasi
+
+            {{-- Subtitle --}}
+            <p class="text-emerald-50/90 text-sm sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed font-medium drop-shadow-md">
+                Temukan ribuan koleksi buku pilihan, nikmati layanan digital tanpa batas, dan jadilah bagian dari komunitas literasi
                 yang inklusif. Ruang temu untuk kota... terbuka untuk semua.
             </p>
-            <div>
+
+            {{-- Action Buttons --}}
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a href="{{ route('login') }}"
-                    class="bg-[#1c5d37] hover:bg-[#144729] text-white px-8 py-3.5 rounded-full font-bold text-sm tracking-wide shadow-md shadow-emerald-900/10 hover:shadow-lg transition-all duration-300 inline-block hover:-translate-y-0.5">
-                    Mulai Pinjam
+                    class="w-full sm:w-auto bg-[#1c5d37] hover:bg-[#144729] text-white px-8 py-3.5 rounded-full font-bold text-sm tracking-wide shadow-lg shadow-black/20 hover:shadow-xl transition-all duration-300 inline-flex items-center justify-center gap-2 hover:-translate-y-0.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                    <span>Mulai Pinjam</span>
+                </a>
+                <a href="{{ route('public.books.index') }}"
+                    class="w-full sm:w-auto bg-white/20 hover:bg-white/30 backdrop-blur-md text-white border border-white/30 px-8 py-3.5 rounded-full font-bold text-sm tracking-wide shadow-md transition-all duration-300 inline-flex items-center justify-center gap-2 hover:-translate-y-0.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <span>Jelajahi Katalog Buku</span>
                 </a>
             </div>
         </div>
