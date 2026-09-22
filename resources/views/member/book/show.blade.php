@@ -16,7 +16,8 @@
 
         {{-- Flash Messages --}}
         @if (session('success'))
-            <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold px-5 py-3 rounded-xl">
+            <div
+                class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold px-5 py-3 rounded-xl">
                 {{ session('success') }}
             </div>
         @endif
@@ -33,7 +34,8 @@
             <div class="space-y-5">
                 {{-- Cover Image --}}
                 <div class="bg-white rounded-2xl p-5 shadow-xs border border-slate-100/80">
-                    <div class="rounded-xl overflow-hidden bg-linear-to-br from-emerald-50 via-teal-50/40 to-emerald-100 flex items-center justify-center">
+                    <div
+                        class="rounded-xl overflow-hidden bg-linear-to-br from-emerald-50 via-teal-50/40 to-emerald-100 flex items-center justify-center">
                         @if ($book->cover_image)
                             <img src="{{ asset('storage/' . $book->cover_image) }}" alt="{{ $book->title }}"
                                 class="w-full h-auto object-contain rounded-xl">
@@ -52,9 +54,11 @@
 
                     {{-- Wishlist & Share --}}
                     <div class="flex gap-2 mt-4">
-                        @include('member.partials.wishlist-button', ['book' => $book, 'variant' => 'detail'])
-                        <button
-                            type="button"
+                        @include('member.partials.wishlist-button', [
+                            'book' => $book,
+                            'variant' => 'detail',
+                        ])
+                        <button type="button"
                             onclick="if(navigator.share){navigator.share({title:'{{ addslashes($book->title) }}',url:window.location.href})}else{navigator.clipboard.writeText(window.location.href);alert('Tautan buku berhasil disalin!')}"
                             class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,7 +141,7 @@
 
                 {{-- Ringkasan Utama --}}
                 @if ($book->description)
-                    <div class="bg-emerald-50/50 border border-emerald-100/80 rounded-2xl p-5">
+                    <div class="bg-emerald-50/50 border border-emerald-500/80 rounded-2xl p-5">
                         <p class="text-[10px] font-bold text-[#1b5e37] uppercase tracking-wider mb-2">Ringkasan Utama</p>
                         <p class="text-sm text-slate-700 leading-relaxed">{{ $book->description }}</p>
                     </div>
@@ -240,18 +244,21 @@
 
         {{-- ========== TENTANG BUKU (Tabs) ========== --}}
         @if ($book->description)
-            <div class="bg-white rounded-2xl shadow-xs border border-slate-100/80 overflow-hidden" x-data="{ activeTab: 'sinopsis' }">
+            <div class="bg-white rounded-2xl shadow-xs border border-slate-100/80 overflow-hidden"
+                x-data="{ activeTab: 'sinopsis' }">
                 <div class="border-b border-slate-100 px-6 pt-5">
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">Informasi Lengkap</p>
                     <h2 class="text-xl font-extrabold text-slate-900 mb-4">Tentang Buku</h2>
                     <div class="flex gap-1 overflow-x-auto">
                         <button @click="activeTab = 'sinopsis'"
-                            :class="activeTab === 'sinopsis' ? 'bg-[#1c5d37] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'"
+                            :class="activeTab === 'sinopsis' ? 'bg-[#1c5d37] text-white' :
+                                'bg-slate-100 text-slate-600 hover:bg-slate-200'"
                             class="px-4 py-2 rounded-t-xl text-xs font-bold transition-all whitespace-nowrap">
                             Sinopsis Lengkap
                         </button>
                         <button @click="activeTab = 'detail'"
-                            :class="activeTab === 'detail' ? 'bg-[#1c5d37] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'"
+                            :class="activeTab === 'detail' ? 'bg-[#1c5d37] text-white' :
+                                'bg-slate-100 text-slate-600 hover:bg-slate-200'"
                             class="px-4 py-2 rounded-t-xl text-xs font-bold transition-all whitespace-nowrap">
                             Detail Teknis & Identitas
                         </button>
@@ -266,7 +273,8 @@
                     <div x-show="activeTab === 'detail'" x-cloak>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Identifikasi</p>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Identifikasi
+                                </p>
                                 <div class="space-y-2 text-xs">
                                     <div class="flex justify-between">
                                         <span class="text-slate-500">ISBN</span>
@@ -283,7 +291,8 @@
                                 </div>
                             </div>
                             <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Penerbitan</p>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Penerbitan
+                                </p>
                                 <div class="space-y-2 text-xs">
                                     <div class="flex justify-between">
                                         <span class="text-slate-500">Penerbit</span>
