@@ -35,4 +35,9 @@ class Book extends Model
     {
         return $this->hasMany(Reservation::class);
     }
+
+    public function wishlistedBy()
+    {
+        return $this->belongsToMany(User::class, 'wishlists')->withTimestamps();
+    }
 }
