@@ -166,5 +166,67 @@
             </div>
         </div>
 
+        {{-- Reader Reviews Section --}}
+        <div class="bg-white rounded-2xl p-6 shadow-xs border border-slate-100/90 space-y-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                <div>
+                    <h2 class="text-lg font-extrabold text-slate-900 tracking-tight">Ulasan & Rating Pembaca</h2>
+                    <p class="text-xs text-slate-500 font-medium">Ulasan yang telah diberikan oleh anggota perpustakaan</p>
+                </div>
+                <div class="flex items-center gap-3 bg-emerald-50/70 border border-emerald-200/80 px-4 py-2 rounded-xl">
+                    @include('partials.star-display', [
+                        'rating' => $book->averageRating(),
+                        'showScore' => true,
+                        'reviewsCount' => $book->reviewsCount(),
+                        'size' => 'md'
+                    ])
+                </div>
+            </div>
+
+            @if ($book->reviews->isEmpty())
+                <div class="py-8 text-center bg-slate-50/50 rounded-xl border border-slate-100">
+                    <svg class="w-10 h-10 text-slate-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <p class="text-xs sm:text-sm font-semibold text-slate-600">Belum Ada Ulasan</p>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Buku ini belum mendapatkan rating atau ulasan dari peminjam.</p>
+                </div>
+            @else
+                <div class="space-y-4 divide-y divide-slate-100">
+                    @foreach ($book->reviews as $review)
+                        <div class="pt-4 first:pt-0 space-y-2">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                                        {{ strtoupper(substr($review->user->name ?? 'U', 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xs font-bold text-slate-900 leading-none">{{ $review->user->name ?? 'Pengguna' }}</h4>
+                                        <p class="text-[10px] text-slate-400 font-medium mt-0.5">{{ $review->user->email ?? '' }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    @include('partials.star-display', [
+                                        'rating' => $review->rating,
+                                        'showScore' => false,
+                                        'size' => 'xs'
+                                    ])
+                                    <span class="text-[11px] text-slate-400 font-normal">
+                                        {{ $review->created_at->diffForHumans() }}
+                                    </span>
+                                </div>
+                            </div>
+                            @if ($review->comment)
+                                <div class="bg-slate-50/70 p-3 rounded-xl border border-slate-100 text-xs text-slate-700 leading-relaxed font-normal ml-0 sm:ml-10">
+                                    "{{ $review->comment }}"
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+
     </div>
 @endsection

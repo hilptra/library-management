@@ -101,6 +101,14 @@
                             {{ $book->title }}
                         </h3>
                         <p class="text-xs text-slate-500 line-clamp-1 mt-0.5">{{ $book->author }}</p>
+                        <div class="mt-2 flex items-center">
+                            @include('partials.star-display', [
+                                'rating' => $book->averageRating(),
+                                'showScore' => true,
+                                'reviewsCount' => $book->reviewsCount(),
+                                'size' => 'xs'
+                            ])
+                        </div>
                     </div>
 
                     <div class="mt-3 pt-3 border-t border-slate-50">

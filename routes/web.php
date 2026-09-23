@@ -17,6 +17,8 @@ use App\Http\Controllers\Member\ProfileController;
 use App\Http\Controllers\Member\WishlistController;
 use App\Http\Controllers\Public\BookController as PublicBookController;
 use App\Http\Controllers\Public\HomeController;
+use App\Http\Controllers\Public\ReviewController as PublicReviewController;
+use App\Http\Controllers\Member\ReviewController as MemberReviewController;
 use Illuminate\Support\Facades\Route;
 
 // Guest Routes (Hanya untuk pengguna yang belum login)
@@ -35,6 +37,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth');
 Route::get('/catalog', [PublicBookController::class, 'index'])->name('public.books.index');
 Route::get('/catalog/{book}', [PublicBookController::class, 'show'])->name('public.books.show');
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/books/{book}/reviews', [PublicReviewController::class, 'index'])->name('books.reviews.index');
 
 // Admin Routes
 Route::middleware(['auth', 'active', 'role:admin'])->prefix('admin')->group(function () {
@@ -97,4 +100,7 @@ Route::middleware(['auth', 'active', 'role:member'])->group(function () {
     Route::get('/member/notifications/{id}/open', [NotificationController::class, 'open'])->name('member.notifications.open');
     Route::delete('/member/notifications/clear', [NotificationController::class, 'clearAll'])->name('member.notifications.clearAll');
     Route::delete('/member/notifications/{id}', [NotificationController::class, 'destroy'])->name('member.notifications.destroy');
+
+    // Review Routes
+    Route::post('/member/books/{book}/reviews', [MemberReviewController::class, 'store'])->name('member.reviews.store');
 });

@@ -51,6 +51,11 @@ class NotificationController extends Controller
 
         if ($notification) {
             $notification->markAsRead();
+
+            $data = $notification->data;
+            if (!empty($data['book_id'])) {
+                return redirect()->route('member.books.show', $data['book_id']);
+            }
         }
 
         return redirect()->route('member.loans.index');

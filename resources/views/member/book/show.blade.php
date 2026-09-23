@@ -314,6 +314,125 @@
             </div>
         @endif
 
+        {{-- ========== ULASAN PEMBACA ========== --}}
+        <div id="ulasan" class="bg-white rounded-2xl p-6 sm:p-8 shadow-xs border border-slate-100/90 space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                <div>
+                    <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Ulasan & Rating Pembaca</h2>
+                    <p class="text-xs text-slate-500 font-medium">Pengalaman membaca dari anggota perpustakaan</p>
+                </div>
+                <div class="flex items-center gap-3 bg-emerald-50/70 border border-emerald-200/80 px-4 py-2 rounded-xl">
+                    @include('partials.star-display', [
+                        'rating' => $book->averageRating(),
+                        'showScore' => true,
+                        'reviewsCount' => $book->reviewsCount(),
+                        'size' => 'md'
+                    ])
+                </div>
+            </div>
+
+            {{-- List of Reviews --}}
+            @if ($book->reviews->isEmpty())
+                <div class="py-8 text-center bg-slate-50/50 rounded-xl border border-slate-100">
+                    <svg class="w-10 h-10 text-slate-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <p class="text-xs sm:text-sm font-semibold text-slate-600">Belum Ada Ulasan</p>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Jadilah yang pertama memberikan ulasan setelah membaca buku ini!</p>
+                </div>
+            @else
+                <div class="space-y-4 divide-y divide-slate-100">
+                    @foreach ($book->reviews as $review)
+                        <div class="pt-4 first:pt-0 space-y-2">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                                        {{ strtoupper(substr($review->user->name ?? 'U', 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xs font-bold text-slate-900 leading-none">{{ $review->user->name ?? 'Pengguna' }}</h4>
+                                        <p class="text-[10px] text-slate-400 font-medium mt-0.5">{{ $review->created_at->diffForHumans() }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    @include('partials.star-display', [
+                                        'rating' => $review->rating,
+                                        'showScore' => false,
+                                        'size' => 'xs'
+                                    ])
+                                </div>
+                            </div>
+                            @if ($review->comment)
+                                <div class="bg-slate-50/70 p-3 rounded-xl border border-slate-100 text-xs text-slate-700 leading-relaxed font-normal ml-0 sm:ml-10">
+                                    "{{ $review->comment }}"
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
+            {{-- Interactive Review Form --}}
+            @if ($hasReturnedLoan)
+                <div class="mt-6 pt-6 border-t bg-emerald-50/40 p-5 rounded-2xl border border-emerald-100">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-extrabold text-sm text-slate-900">
+                            {{ $myReview ? 'Perbarui Rating & Ulasan Anda' : 'Beri Rating & Ulasan' }}
+                        </h3>
+                        @if ($myReview)
+                            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full">
+                                Ulasan tersimpan
+                            </span>
+                        @endif
+                    </div>
+
+                    <form action="{{ route('member.reviews.store', $book) }}" method="POST" class="space-y-4">
+                        @csrf
+                        <div x-data="{ rating: {{ old('rating', $myReview->rating ?? 5) }}, hoverRating: 0 }">
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Rating Bintang *</label>
+                            <input type="hidden" name="rating" :value="rating">
+                            <div class="flex items-center gap-1.5">
+                                <div class="flex gap-1" @mouseleave="hoverRating = 0">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        <button type="button"
+                                            @click="rating = {{ $i }}"
+                                            @mouseenter="hoverRating = {{ $i }}"
+                                            class="p-1 text-2xl focus:outline-none transition-transform hover:scale-110"
+                                            :class="(hoverRating ? hoverRating >= {{ $i }} : rating >= {{ $i }}) ? 'text-amber-400' : 'text-slate-300'">
+                                            ★
+                                        </button>
+                                    @endfor
+                                </div>
+                                <span class="text-xs font-bold text-slate-700 ml-2" x-text="rating + ' dari 5 bintang'"></span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Ulasan / Komentar Anda (Opsional)</label>
+                            <textarea name="comment" rows="3" placeholder="Tulis pendapat atau kesan Anda tentang buku ini..."
+                                class="w-full border border-slate-200 rounded-xl p-3 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 bg-white transition-all">{{ old('comment', $myReview->comment ?? '') }}</textarea>
+                        </div>
+
+                        <button type="submit"
+                            class="bg-[#409a63] hover:bg-[#348353] text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-2xs hover:shadow-xs transition-all flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>{{ $myReview ? 'Simpan Perubahan Ulasan' : 'Kirim Ulasan' }}</span>
+                        </button>
+                    </form>
+                </div>
+            @else
+                <div class="mt-4 p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-3 text-xs text-slate-500">
+                    <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Anda dapat memberikan ulasan & rating untuk buku ini setelah Anda meminjam dan mengembalikannya.</span>
+                </div>
+            @endif
+        </div>
+
         {{-- ========== BUKU SERUPA ========== --}}
         @if ($relatedBooks->count() > 0)
             <div>

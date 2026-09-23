@@ -15,7 +15,9 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Book::with('categories');
+        $query = Book::with('categories', 'copies')
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews');
 
         if ($request->filled('search')) {
             $query->where('title', 'like', '%'.$request->search.'%')
@@ -81,7 +83,7 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        $book->load('categories', 'copies');
+        $book->load(['categories', 'copies', 'reviews.user']);
 
         return view('admin.book.show', compact('book'));
     }
