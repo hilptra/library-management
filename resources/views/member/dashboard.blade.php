@@ -34,11 +34,11 @@
 
                 {{-- Quick Stats Badges --}}
                 <div class="flex items-center gap-3 shrink-0">
-                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10 text-center min-w-[90px]">
+                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10 text-center min-w-22.5">
                         <span class="block text-2xl font-black text-white">{{ $activeLoans->count() }}</span>
                         <span class="text-[11px] font-semibold text-emerald-100">Dipinjam</span>
                     </div>
-                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10 text-center min-w-[90px]">
+                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10 text-center min-w-22.5">
                         <span class="block text-2xl font-black text-white">{{ $wishlistBooks->count() }}</span>
                         <span class="text-[11px] font-semibold text-emerald-100">Wishlist</span>
                     </div>
