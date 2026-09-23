@@ -220,7 +220,7 @@
                         </a>
                     @else
                         {{-- Member Navigation Links --}}
-                        <a href="{{ route('member.dashboard') }}" :title="!sidebarOpen ? 'Dashboard' : ''"
+                        <a href="{{ route('member.dashboard') }}" :title="!sidebarOpen ? 'Beranda' : ''"
                             class="flex items-center gap-3 py-2.5 rounded-xl transition-colors relative {{ request()->routeIs('member.dashboard') ? 'bg-[#dcfce7] text-[#166534] font-bold shadow-2xs' : 'text-slate-600 hover:bg-emerald-100/50 hover:text-slate-900' }}"
                             :class="sidebarOpen ? 'px-3.5' : 'justify-center px-0'">
                             @if (request()->routeIs('member.dashboard'))
@@ -232,7 +232,7 @@
                                     d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                             </svg>
                             <span x-show="sidebarOpen" x-transition.opacity.duration.200ms
-                                class="whitespace-nowrap">Dashboard</span>
+                                class="whitespace-nowrap">Beranda</span>
                         </a>
 
                         <a href="{{ route('member.books.index') }}" :title="!sidebarOpen ? 'Katalog Buku' : ''"
@@ -280,8 +280,7 @@
                                 class="whitespace-nowrap">Daftar Keinginan</span>
                         </a>
 
-                        <a href="{{ route('member.notifications.index') }}"
-                            :title="!sidebarOpen ? 'Notifikasi' : ''"
+                        <a href="{{ route('member.notifications.index') }}" :title="!sidebarOpen ? 'Notifikasi' : ''"
                             class="flex items-center gap-3 py-2.5 rounded-xl transition-colors relative {{ request()->routeIs('member.notifications.*') ? 'bg-[#dcfce7] text-[#166534] font-bold shadow-2xs' : 'text-slate-600 hover:bg-emerald-100/50 hover:text-slate-900' }}"
                             :class="sidebarOpen ? 'px-3.5' : 'justify-center px-0'">
                             @if (request()->routeIs('member.notifications.*'))
@@ -301,7 +300,8 @@
                                 class="whitespace-nowrap flex-1 flex items-center justify-between">
                                 <span>Notifikasi</span>
                                 @if (Auth::user()->unreadNotifications->count() > 0)
-                                    <span class="px-1.5 py-0.5 text-[10px] font-bold bg-rose-100 text-rose-700 rounded-full">
+                                    <span
+                                        class="px-1.5 py-0.5 text-[10px] font-bold bg-rose-100 text-rose-700 rounded-full">
                                         {{ Auth::user()->unreadNotifications->count() }}
                                     </span>
                                 @endif
@@ -494,14 +494,16 @@
                                             </div>
                                             <div class="flex-1 min-w-0">
                                                 <div class="flex items-center justify-between gap-1 mb-0.5">
-                                                    <p class="text-xs font-bold text-slate-800 truncate">{{ $title }}
+                                                    <p class="text-xs font-bold text-slate-800 truncate">
+                                                        {{ $title }}
                                                     </p>
                                                     @if ($isUnread)
                                                         <span
                                                             class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
                                                     @endif
                                                 </div>
-                                                <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed wrap-break-words">
+                                                <p
+                                                    class="text-xs text-slate-600 line-clamp-2 leading-relaxed wrap-break-words">
                                                     {{ $message }}</p>
                                                 <p
                                                     class="text-[10px] font-medium text-slate-400 mt-1 flex items-center gap-1">

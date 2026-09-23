@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Loan;
+use App\Models\Setting;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -39,6 +41,35 @@ class DashboardController extends Controller
 
     public function member()
     {
-        return view('member.dashboard');
+        $user = Auth::user();
+
+        $settings = [
+            'fine_per_day' => (int) Setting::get('fine_per_day', 1000),
+            'loan_duration_days' => (int) Setting::get('loan_duration_days', 7),
+            'max_active_loans' => (int) Setting::get('max_active_loans', 3),
+        ];
+
+        $activeLoans = Loan::with(['bookCopy.book'])
+            ->where('user_id', $user->id)
+            ->where('status', 'borrowed')
+            ->orderBy('due_date', 'asc')
+            ->get();
+
+        $latestBooks = Book::with(['categories', 'copies'])
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
+            ->latest()
+            ->take(6)
+            ->get();
+
+        $wishlistBooks = $user->wishlistedBooks()
+            ->with(['categories', 'copies'])
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
+            ->latest('wishlists.created_at')
+            ->take(4)
+            ->get();
+
+        return view('member.dashboard', compact('activeLoans', 'latestBooks', 'wishlistBooks', 'settings'));
     }
 }
