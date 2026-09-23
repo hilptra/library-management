@@ -1,59 +1,139 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📚 Sistem Manajemen Perpustakaan Kota
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi Sistem Manajemen Perpustakaan (*Library Management System*) berbasis web modern yang dibangun dengan **Laravel 12**, **Tailwind CSS v4**, **Alpine.js**, dan **MySQL**. Aplikasi ini menyediakan fitur lengkap untuk pengelolaan koleksi buku, sirkulasi peminjaman & pengembalian, kalkulasi denda otomatis, ulasan & rating pembaca, daftar keinginan (wishlist), kartu anggota digital ber-QR Code, serta dashboard statistik bagi Admin (Pustakawan) dan Anggota (*Member*).
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🌟 Fitur Utama
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 👤 1. Area Anggota (Member)
+- **Beranda Member Interaktif**:
+  - Ringkasan peminjaman aktif beserta hitung mundur sisa batas waktu pengembalian (*"Sisa X Hari Lagi"*, *"Jatuh Tempo Hari Ini!"*, *"Terlambat X Hari!"*).
+  - Akses cepat (*Quick Actions*) ke Katalog, Peminjaman, Wishlist, dan Profil.
+  - Kartu informasi & aturan sirkulasi perpustakaan yang terhubung secara **dinamis** dengan konfigurasi Admin.
+  - Etalase buku terbaru dan pratinjau daftar keinginan (*Wishlist*).
+- **Katalog Buku & Pencarian**: Tampilan *Card Grid* responsif dilengkapi filter kategori, pencarian cepat, status stok eksemplar real-time, dan indikator rating bintang.
+- **Daftar Keinginan (Wishlist)**: Simpan buku favorit untuk peminjaman cepat di kemudian hari.
+- **Review & Rating Buku**: Member yang telah meminjam dan mengembalikan buku dapat memberikan rating (1-5 bintang) serta ulasan/komentar interaktif.
+- **Pusat Notifikasi**: Notifikasi otomatis untuk persetujuan/penolakan pinjaman serta ajakan mengulas setelah pengembalian buku (langsung mengarah ke halaman ulasan buku).
+- **Kartu Anggota Digital & QR Code ID**: Generasi QR Code ID unik berbasis `PERPUS-ID-{user_id}` untuk verifikasi identitas di lokasi perpustakaan.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🛡️ 2. Area Admin (Pustakawan)
+- **Dashboard Admin**: Ringkasan statistik total buku, anggota aktif, buku sedang dipinjam, keterlambatan pengembalian, serta aktivitas transaksi terbaru.
+- **Manajemen Buku & Eksemplar Fisik**: CRUD data buku (judul, penulis, ISBN, penerbit, tahun terbit, sinopsis, cover) & alokasi kode inventaris eksemplar fisik (`book_copies`).
+- **Peninjau Ulasan Pembaca**: Admin dapat melihat detail semua rating & ulasan dari pembaca pada setiap halaman detail buku admin.
+- **Kelola Transaksi Sirkulasi**: Persetujuan (*Approve*), Penolakan (*Reject*), dan Pengembalian (*Return*) buku dengan kalkulasi denda keterlambatan otomatis.
+- **Manajemen Anggota**: Daftar anggota dan penangguhan akses akun (*Toggle Status Active / Suspended*).
+- **Pengaturan Sistem (Settings)**: Pengaturan durasi standar peminjaman (hari), tarif denda keterlambatan per hari, dan batas maksimal buku aktif.
+- **Laporan & Ekspor CSV**: Laporan riwayat transaksi dengan filter rentang tanggal dan status, serta ekspor file CSV.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 🛠️ Teknologi yang Digunakan
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Framework Backend**: [Laravel 12](https://laravel.com)
+- **Frontend & Styling**: Tailwind CSS v4, Alpine.js
+- **Database**: MySQL (Pengembangan / Laragon) & SQLite (Testing `:memory:`)
+- **Fitur Tambahan**: Endroid QR Code v6, Hand-rolled Authentication & Custom Middleware RBAC
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🚀 Panduan Instalasi & Penggunaan
 
-### Premium Partners
+### 1. Prasyarat Sistem
+- PHP >= 8.2
+- Composer
+- Node.js & NPM
+- Database MySQL (Laragon / XAMPP)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 2. Langkah Instalasi
 
-## Contributing
+1. **Clone repositori**:
+   ```bash
+   git clone https://github.com/hilptra/library-management.git
+   cd library-management
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+2. **Install dependensi PHP & Node.js**:
+   ```bash
+   composer install
+   npm install
+   ```
 
-## Code of Conduct
+3. **Konfigurasi Environment**:
+   Salin file `.env.example` menjadi `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+   Buka file `.env` dan sesuaikan pengaturan koneksi database MySQL:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=library_management
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+4. **Generate Application Key**:
+   ```bash
+   php artisan key:generate
+   ```
 
-## Security Vulnerabilities
+5. **Jalankan Migrasi & Seeder Database**:
+   ```bash
+   php artisan migrate --seed
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+6. **Buat Symlink Storage Cover**:
+   ```bash
+   php artisan storage:link
+   ```
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🔑 Akun Demo (Default Seeders)
+
+Setelah menjalankan `db:seed`, Anda dapat menggunakan akun pengujian berikut:
+
+| Role | Email | Password | Hak Akses |
+|---|---|---|---|
+| **Admin** | `admin@example.com` | `admin123` | Pengelolaan penuh data buku, transaksi, anggota, dan pengaturan |
+| **Member** | `member@gmail.com` | `password` | Katalog buku, peminjaman, wishlist, ulasan, & kartu anggota |
+
+---
+
+## 🏃 Menjalankan Aplikasi
+
+Jalankan perintah berikut untuk memulai server pengembang (*artisan serve*, *vite*, *queue listener*, dan *pail* secara bersamaan):
+
+```bash
+composer run dev
+```
+
+Buka peramban web dan akses: `http://127.0.0.1:8000`
+
+---
+
+## 🧪 Pengujian Unit & Fitur
+
+Untuk menjalankan suite pengujian otomatis:
+
+```bash
+composer test
+```
+
+---
+
+## 📂 Dokumentasi Proyek (`docs/`)
+
+Dokumentasi rancangan & spesifikasi sistem lengkap dapat diakses pada direktori `docs/`:
+- [`docs/01-requirement.md`](docs/01-requirement.md): Kebutuhan Fungsional & Non-Fungsional Sistem
+- [`docs/02-erd.md`](docs/02-erd.md): Entity Relationship Diagram & Schema Tabel Database
+- [`docs/03-sitemap.md`](docs/03-sitemap.md): Struktur Navigasi Halaman & Route Map
+- [`docs/04-userflow.md`](docs/04-userflow.md): Alur Kerja Pengguna (Admin & Member)
+
+---
+
+## 📜 Lisensi
+Sistem Manajemen Perpustakaan ini dibuat untuk tujuan pengembangan dan berlisensi [MIT License](LICENSE).

@@ -1,6 +1,6 @@
 # ERD — Sistem Manajemen Perpustakaan
 
-**Versi:** 1.4  
+**Versi:** 1.5  
 **Status:** Terimplementasi  
 **Terakhir diperbarui:** September 2026  
 
@@ -16,7 +16,10 @@
 | `book_copies` | Data eksemplar fisik tiap judul buku |
 | `book_category` | Tabel pivot relasi Many-to-Many antara `books` dan `categories` |
 | `loans` | Transaksi peminjaman, persetujuan, pembatalan & pengembalian eksemplar buku |
-| `settings` | Konfigurasi parameter sistem (durasi peminjaman standar, tarif denda harian) |
+| `reviews` | Ulasan & rating bintang (1-5) dari anggota untuk judul buku |
+| `wishlists` | Tabel pivot daftar keinginan (wishlist) favorit anggota |
+| `notifications` | Notifikasi sistem & aktivitas transaksi pengguna (Laravel Database Notifications) |
+| `settings` | Konfigurasi parameter sistem (durasi peminjaman standar, tarif denda harian, max pinjam) |
 | `reservations` | Pemesanan judul buku (tabel disiapkan untuk pengembangan tingkat lanjut) |
 
 ---
@@ -55,7 +58,7 @@
 | description | text, nullable | Sinopsis / deskripsi singkat buku |
 | created_at, updated_at | timestamp | |
 
-*(Ketersediaan buku dihitung secara dinamik dari jumlah eksemplar berstatus `available` pada `book_copies`.)*
+*(Ketersediaan buku dihitung secara dinamik dari eksemplar berstatus `available` pada `book_copies`. Rata-rata rating dihitung dari tabel `reviews`.)*
 
 ### 2.4 `book_copies`
 | Kolom | Tipe | Keterangan |
@@ -65,16 +68,6 @@
 | inventory_code | varchar, unique | Kode unik inventaris fisik eksemplar |
 | status | enum('available','reserved','borrowed','damaged','lost') | Status fisik / alokasi eksemplar |
 | created_at, updated_at | timestamp | |
-
-**Alur status eksemplar:**
-- `available` → Siap diajukan oleh Anggota dari katalog.
-- `reserved` → Dikunci sementara karena ada pengajuan pinjam berstatus `pending` dari Anggota.
-- `borrowed` → Disetujui (approve) oleh Admin, buku resmi keluar dipinjam.
-- Kembali ke `available` jika:
-  - Admin menolak (`reject`) pengajuan pinjaman.
-  - Anggota membatalkan (`cancel`) pengajuan pinjaman.
-  - Admin memproses pengembalian (`return`) buku.
-- `damaged` / `lost` → Diubah manual oleh Admin jika kondisi fisik buku rusak atau hilang.
 
 ### 2.5 `book_category` (Pivot)
 | Kolom | Tipe | Keterangan |
@@ -96,29 +89,43 @@
 | status | enum('pending','borrowed','returned','rejected','cancelled') | Status transaksi peminjaman |
 | created_at, updated_at | timestamp | |
 
-**Alur status peminjaman:**
-```
-pending → (admin approve)   → borrowed → (admin proses kembali) → returned
-pending → (admin reject)    → rejected
-pending → (anggota cancel)  → cancelled
-```
-- `pending`: Anggota mengajukan pinjaman (`loan_date` & `due_date` masih null).
-- `borrowed`: Admin menyetujui permintaan, `loan_date` dan `due_date` diisi otomatis.
-- `returned`: Admin memproses pengembalian fisik, `return_date` diisi, denda dihitung jika `return_date > due_date`.
-- `rejected`: Admin menolak pengajuan.
-- `cancelled`: Anggota membatalkan pengajuan saat status masih `pending`.
-
-> Catatan: Status keterlambatan **tidak** disimpan sebagai enum terpisah. Keterlambatan dan denda dihitung secara real-time berdasarkan selisih hari antara `due_date` dan tanggal hari ini (atau `return_date`) dikali nilai denda per hari dari tabel `settings`.
-
-### 2.7 `settings`
+### 2.7 `reviews`
 | Kolom | Tipe | Keterangan |
 |---|---|---|
 | id | bigint, PK | Auto increment |
-| key | varchar, unique | Kunci konfigurasi (misal: `borrow_duration_days`, `fine_per_day`) |
+| user_id | bigint, FK → users.id | Referensi anggota pemberi ulasan |
+| book_id | bigint, FK → books.id | Referensi buku yang diulas |
+| rating | unsignedTinyInteger | Nilai rating 1 hingga 5 bintang |
+| comment | text, nullable | Komentar atau ulasan bebas |
+| created_at, updated_at | timestamp | |
+
+### 2.8 `wishlists` (Pivot)
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| id | bigint, PK | Auto increment |
+| user_id | bigint, FK → users.id | Referensi anggota |
+| book_id | bigint, FK → books.id | Referensi buku |
+| created_at, updated_at | timestamp | |
+
+### 2.9 `notifications`
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| id | char(36), PK | UUID Notifikasi |
+| type | varchar | Class Notification (misal: `App\Notifications\LoanStatusChanged`) |
+| notifiable_type, notifiable_id | varchar, bigint | Morph model (`App\Models\User`) |
+| data | text / json | Data notifikasi (`title`, `message`, `action`, `book_id`, dsb) |
+| read_at | timestamp, nullable | Waktu notifikasi dibaca |
+| created_at, updated_at | timestamp | |
+
+### 2.10 `settings`
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| id | bigint, PK | Auto increment |
+| key | varchar, unique | Kunci konfigurasi (`loan_duration_days`, `fine_per_day`, `max_active_loans`) |
 | value | string | Nilai konfigurasi |
 | created_at, updated_at | timestamp | |
 
-### 2.8 `reservations`
+### 2.11 `reservations`
 | Kolom | Tipe | Keterangan |
 |---|---|---|
 | id | bigint, PK | Auto increment |
@@ -128,20 +135,22 @@ pending → (anggota cancel)  → cancelled
 | status | enum('waiting','fulfilled','cancelled') | |
 | created_at, updated_at | timestamp | |
 
-*(Tabel disiapkan untuk pengembangan fitur reservasi di masa depan.)*
-
 ---
 
 ## 3. Relasi Antar Tabel
 
 ```
 users        (1) ─────< (N) loans
+users        (1) ─────< (N) reviews
 users        (1) ─────< (N) reservations
+users        (N) ─────< wishlists >───── (N) books
 book_copies  (1) ─────< (N) loans
 books        (1) ─────< (N) book_copies
+books        (1) ─────< (N) reviews
 books        (1) ─────< (N) reservations
 books        (N) ─────< book_category >───── (N) categories
 settings     (Konfigurasi Sistem Standalone)
+notifications(Polymorphic MorphTo User)
 ```
 
 ---
@@ -152,6 +161,5 @@ settings     (Konfigurasi Sistem Standalone)
 |---|---|---|
 | Agustus 2026 | Draft awal: users, books, book_copies, categories, loans | Perancangan awal |
 | Agustus 2026 | Revisi: books–categories jadi Many-to-Many via `book_category` | Requirement 1 buku bisa punya banyak kategori |
-| Agustus 2026 | Revisi: `loans.status` jadi 4 nilai (pending, borrowed, returned, rejected) | Alur peminjaman self-service dengan approval admin |
-| Agustus 2026 | Revisi: status `reserved` di `book_copies` | Mencegah konflik pengajuan ganda pada eksemplar yang sama |
-| September 2026 | Pembaharuan: Tambah status `suspended` pada `users.status`, status `cancelled` pada `loans.status`, dan tabel `settings` | Penyesuaian dengan fitur pembatalan pinjaman oleh anggota, suspen anggota, dan konfigurasi denda/durasi |
+| September 2026 | Pembaharuan: Status `suspended`, `cancelled`, dan tabel `settings` | Penyesuaian fitur pembatalan, suspen, dan settings |
+| September 2026 | Pembaharuan ERD: Tambah entitas `reviews`, `wishlists`, dan `notifications` | Penyesuaian dengan implementasi fitur ulasan/rating, wishlist, dan notifikasi |
