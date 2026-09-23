@@ -47,7 +47,7 @@ class LoanStatusChanged extends Notification
         $messages = [
             'approved' => 'Pengajuan peminjaman untuk buku "'.$bookTitle.'" telah disetujui. Batas waktu pengembalian: '.($dueDateFormatted ?? '-').'.',
             'rejected' => 'Pengajuan peminjaman untuk buku "'.$bookTitle.'" ditolak oleh pengelola perpustakaan.',
-            'returned' => 'Buku "'.$bookTitle.'" telah berhasil dikembalikan'.($this->loan->fine_amount > 0 ? ' dengan denda Rp '.number_format($this->loan->fine_amount, 0, ',', '.') : '').'.',
+            'returned' => 'Buku "'.$bookTitle.'" telah berhasil dikembalikan'.($this->loan->fine_amount > 0 ? ' dengan denda Rp '.number_format($this->loan->fine_amount, 0, ',', '.') : '').'. Yuk, berikan rating & ulasan Anda untuk buku ini!',
         ];
 
         return [
@@ -55,6 +55,7 @@ class LoanStatusChanged extends Notification
             'message' => $messages[$this->action] ?? 'Status peminjaman buku "'.$bookTitle.'" telah diperbarui.',
             'action' => $this->action,
             'loan_id' => $this->loan->id,
+            'book_id' => $book?->id,
             'book_title' => $bookTitle,
             'book_cover' => $coverImage,
             'due_date' => $this->loan->due_date?->format('Y-m-d'),

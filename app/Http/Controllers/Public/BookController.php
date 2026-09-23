@@ -11,7 +11,9 @@ class BookController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Book::with('categories');
+        $query = Book::with('categories', 'copies')
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews');
 
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
@@ -38,6 +40,8 @@ class BookController extends Controller
         // Buku serupa berdasarkan kategori yang sama
         $categoryIds = $book->categories->pluck('id');
         $relatedBooks = Book::with('categories', 'copies')
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
             ->whereHas('categories', function ($q) use ($categoryIds) {
                 $q->whereIn('categories.id', $categoryIds);
             })

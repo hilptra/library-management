@@ -149,6 +149,15 @@
                                         Tahun: {{ $book->published_year }}
                                     </p>
                                 @endif
+
+                                <div class="mt-2 flex items-center">
+                                    @include('partials.star-display', [
+                                        'rating' => $book->averageRating(),
+                                        'showScore' => true,
+                                        'reviewsCount' => $book->reviewsCount(),
+                                        'size' => 'xs'
+                                    ])
+                                </div>
                             </div>
                         </div>
 

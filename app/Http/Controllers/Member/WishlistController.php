@@ -12,6 +12,8 @@ class WishlistController extends Controller
     {
         $books = Auth::user()->wishlistedBooks()
             ->with(['categories', 'copies'])
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
             ->latest('wishlists.created_at')
             ->paginate(12);
 

@@ -161,10 +161,17 @@
                                     {{ $notification->created_at->diffForHumans() }} ({{ $notification->created_at->format('d M Y, H:i') }})
                                 </span>
 
-                                <a href="{{ route('member.loans.index') }}"
-                                    class="text-emerald-700 hover:text-emerald-800 font-bold hover:underline">
-                                    Lihat Riwayat &rarr;
-                                </a>
+                                @if (!empty($notification->data['book_id']))
+                                    <a href="{{ route('member.books.show', $notification->data['book_id']) }}"
+                                        class="text-emerald-700 hover:text-emerald-800 font-bold hover:underline">
+                                        Lihat Buku & Ulasan &rarr;
+                                    </a>
+                                @else
+                                    <a href="{{ route('member.loans.index') }}"
+                                        class="text-emerald-700 hover:text-emerald-800 font-bold hover:underline">
+                                        Lihat Riwayat &rarr;
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </div>

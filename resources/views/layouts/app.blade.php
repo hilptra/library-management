@@ -365,7 +365,7 @@
 
             {{-- Top Navbar --}}
             <header
-                class="py-4 px-6 lg:px-8 bg-[#edf6f1]/90 backdrop-blur-md border-b border-emerald-100/40 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
+                class="relative z-40 py-4 px-6 lg:px-8 bg-[#edf6f1]/90 backdrop-blur-md border-b border-emerald-100/40 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
 
                 <div class="flex items-center gap-3">
                     {{-- Sidebar Toggle Button Desktop --}}
@@ -433,7 +433,7 @@
                             x-transition:leave="transition ease-in duration-150"
                             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                             x-transition:leave-end="opacity-0 translate-y-2 scale-95"
-                            class="absolute right-0 mt-2 w-84 sm:w-96 bg-white rounded-2xl shadow-xl border border-slate-100 z-50 overflow-hidden divide-y divide-slate-100">
+                            class="absolute right-0 mt-2 w-[calc(100vw-2rem)] sm:w-96 max-w-sm sm:max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 overflow-hidden divide-y divide-slate-100 ring-1 ring-slate-900/5">
 
                             {{-- Dropdown Header --}}
                             <div class="px-4 py-3 bg-slate-50/70 flex items-center justify-between">
@@ -467,7 +467,7 @@
                                         $isUnread = is_null($notification->read_at);
                                     @endphp
                                     <a href="{{ Auth::user()->role === 'member' ? route('member.notifications.open', $notification->id) : '#' }}"
-                                        class="block p-3.5 transition-colors {{ $isUnread ? 'bg-emerald-50/40 hover:bg-emerald-50/70' : 'bg-white hover:bg-slate-50' }}">
+                                        class="block p-3.5 transition-colors focus:outline-none focus:ring-0 {{ $isUnread ? 'bg-emerald-50/40 hover:bg-emerald-50/70' : 'bg-white hover:bg-slate-50' }}">
                                         <div class="flex gap-3 items-start">
                                             <div
                                                 class="w-8 h-8 rounded-xl shrink-0 flex items-center justify-center mt-0.5 {{ $action === 'approved' ? 'bg-emerald-100 text-emerald-700' : ($action === 'rejected' ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-700') }}">
@@ -501,7 +501,7 @@
                                                             class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
                                                     @endif
                                                 </div>
-                                                <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                                                <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed wrap-break-words">
                                                     {{ $message }}</p>
                                                 <p
                                                     class="text-[10px] font-medium text-slate-400 mt-1 flex items-center gap-1">

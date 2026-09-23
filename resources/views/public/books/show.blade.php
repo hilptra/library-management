@@ -25,7 +25,8 @@
             <div class="space-y-5">
                 {{-- Cover Image --}}
                 <div class="bg-white rounded-2xl p-5 shadow-xs border border-slate-100/80">
-                    <div class="rounded-xl overflow-hidden bg-linear-to-br from-emerald-50 via-teal-50/40 to-emerald-100 flex items-center justify-center">
+                    <div
+                        class="rounded-xl overflow-hidden bg-linear-to-br from-emerald-50 via-teal-50/40 to-emerald-100 flex items-center justify-center">
                         @if ($book->cover_image)
                             <img src="{{ asset('storage/' . $book->cover_image) }}" alt="{{ $book->title }}"
                                 class="w-full h-auto object-contain rounded-xl">
@@ -235,18 +236,22 @@
 
         {{-- ========== TENTANG BUKU (Tabs) ========== --}}
         @if ($book->description)
-            <div class="bg-white rounded-2xl shadow-xs border border-slate-100/80 overflow-hidden" x-data="{ activeTab: 'sinopsis' }">
+            <div class="bg-white rounded-2xl shadow-xs border border-slate-100/80 overflow-hidden"
+                x-data="{ activeTab: 'sinopsis' }">
                 <div class="border-b border-slate-100 px-6 pt-5">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">Informasi Lengkap Perpustakaan</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">Informasi Lengkap
+                        Perpustakaan</p>
                     <h2 class="text-xl font-extrabold text-slate-900 mb-4">Tentang Buku</h2>
                     <div class="flex gap-1 overflow-x-auto">
                         <button @click="activeTab = 'sinopsis'"
-                            :class="activeTab === 'sinopsis' ? 'bg-[#1c5d37] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'"
+                            :class="activeTab === 'sinopsis' ? 'bg-[#1c5d37] text-white' :
+                                'bg-slate-100 text-slate-600 hover:bg-slate-200'"
                             class="px-4 py-2 rounded-t-xl text-xs font-bold transition-all whitespace-nowrap">
                             Sinopsis Lengkap
                         </button>
                         <button @click="activeTab = 'detail'"
-                            :class="activeTab === 'detail' ? 'bg-[#1c5d37] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'"
+                            :class="activeTab === 'detail' ? 'bg-[#1c5d37] text-white' :
+                                'bg-slate-100 text-slate-600 hover:bg-slate-200'"
                             class="px-4 py-2 rounded-t-xl text-xs font-bold transition-all whitespace-nowrap">
                             Detail Teknis & Identitas
                         </button>
@@ -258,7 +263,8 @@
                     {{-- Sinopsis --}}
                     <div x-show="activeTab === 'sinopsis'" x-cloak>
                         <div class="prose prose-sm prose-slate max-w-none">
-                            <p class="text-sm text-slate-700 leading-relaxed whitespace-pre-line">{{ $book->description }}</p>
+                            <p class="text-sm text-slate-700 leading-relaxed whitespace-pre-line">{{ $book->description }}
+                            </p>
                         </div>
                     </div>
 
@@ -266,7 +272,8 @@
                     <div x-show="activeTab === 'detail'" x-cloak>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Identifikasi</p>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Identifikasi
+                                </p>
                                 <div class="space-y-2 text-xs">
                                     <div class="flex justify-between">
                                         <span class="text-slate-500">ISBN</span>
@@ -283,7 +290,8 @@
                                 </div>
                             </div>
                             <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Penerbitan</p>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Penerbitan
+                                </p>
                                 <div class="space-y-2 text-xs">
                                     <div class="flex justify-between">
                                         <span class="text-slate-500">Penerbit</span>
@@ -305,13 +313,28 @@
             </div>
         @endif
 
+        {{-- ========== ULASAN PEMBACA ========== --}}
+        <div class="mt-6 bg-white p-6 rounded-xl shadow-xs">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-bold">Ulasan Pembaca</h2>
+                <a href="{{ route('books.reviews.index', $book) }}"
+                    class="text-sm text-emerald-700 hover:underline">Lihat Semua</a>
+            </div>
+            <div class="flex items-center gap-2">
+                @include('partials.star-display', ['rating' => $book->averageRating()])
+                <span class="text-sm text-gray-500">({{ $book->reviewsCount() }} ulasan)</span>
+            </div>
+        </div>
+
         {{-- ========== BUKU SERUPA ========== --}}
         @if ($relatedBooks->count() > 0)
             <div>
                 <div class="flex items-end justify-between mb-6">
                     <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Mungkin Kamu Menyukai</p>
-                        <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Buku Serupa yang Sering Dipinjam</h2>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Mungkin Kamu Menyukai
+                        </p>
+                        <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Buku Serupa yang Sering Dipinjam
+                        </h2>
                     </div>
                     <a href="{{ route('public.books.index') }}"
                         class="text-xs font-bold text-[#1c5d37] hover:underline flex items-center gap-1 shrink-0">
