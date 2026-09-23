@@ -9,8 +9,10 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
                 <div class="flex items-center gap-3">
-                    <h1 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">Katalog Buku Perpustakaan</h1>
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <h1 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">Katalog Buku Perpustakaan
+                    </h1>
+                    <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -26,9 +28,11 @@
 
         {{-- Flash Messages --}}
         @if (session('success'))
-            <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold px-5 py-3 rounded-xl flex items-center justify-between">
+            <div
+                class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold px-5 py-3 rounded-xl flex items-center justify-between">
                 <span>{{ session('success') }}</span>
-                <a href="{{ route('member.wishlist.index') }}" class="text-xs font-bold text-emerald-700 underline hover:text-emerald-800">
+                <a href="{{ route('member.wishlist.index') }}"
+                    class="text-xs font-bold text-emerald-700 underline hover:text-emerald-800">
                     Lihat Wishlist &rarr;
                 </a>
             </div>
@@ -93,7 +97,8 @@
         {{-- Book Catalog Card Grid --}}
         @if ($books->isEmpty())
             <div class="bg-white rounded-2xl p-12 text-center border border-slate-100/90 shadow-xs max-w-lg mx-auto my-8">
-                <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-2xs">
+                <div
+                    class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-2xs">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                             d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -109,22 +114,26 @@
                 </a>
             </div>
         @else
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
                 @foreach ($books as $book)
                     @php
                         $availableCount = $book->copies ? $book->copies->where('status', 'available')->count() : 0;
                         $totalCopies = $book->copies ? $book->copies->count() : 0;
                     @endphp
-                    <div class="bg-white rounded-2xl p-4 shadow-xs border border-slate-100/90 hover:shadow-lg hover:border-emerald-200 transition-all duration-300 flex flex-col justify-between group relative">
+                    <div
+                        class="bg-white rounded-2xl p-4 shadow-xs border border-slate-100/90 hover:shadow-lg hover:border-emerald-200 transition-all duration-300 flex flex-col justify-between group relative">
                         <div>
                             {{-- Cover Container with Wishlist & Status Badges --}}
-                            <div class="relative rounded-xl overflow-hidden bg-slate-50 mb-3.5 aspect-3/4 flex items-center justify-center border border-slate-100 shadow-2xs">
+                            <div
+                                class="relative rounded-xl overflow-hidden bg-slate-50 mb-3.5 aspect-3/4 flex items-center justify-center border border-slate-100 shadow-2xs">
                                 @if ($book->cover_image)
                                     <img src="{{ asset('storage/' . $book->cover_image) }}" alt="{{ $book->title }}"
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                 @else
-                                    <div class="w-full h-full flex flex-col items-center justify-center p-4 text-center bg-linear-to-br from-emerald-50/70 to-teal-50/70">
-                                        <svg class="w-12 h-12 text-emerald-600/30 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div
+                                        class="w-full h-full flex flex-col items-center justify-center p-4 text-center bg-linear-to-br from-emerald-50/70 to-teal-50/70">
+                                        <svg class="w-12 h-12 text-emerald-600/30 mb-2" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                                 d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                         </svg>
@@ -134,18 +143,23 @@
 
                                 {{-- Floating Wishlist Button --}}
                                 <div class="absolute top-2.5 right-2.5 z-10">
-                                    @include('member.partials.wishlist-button', ['book' => $book, 'variant' => 'card-float'])
+                                    @include('member.partials.wishlist-button', [
+                                        'book' => $book,
+                                        'variant' => 'card-float',
+                                    ])
                                 </div>
 
                                 {{-- Availability Badge --}}
                                 <div class="absolute bottom-2.5 left-2.5 z-10">
                                     @if ($availableCount > 0)
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-600/90 text-white text-[10px] font-bold rounded-full backdrop-blur-xs shadow-xs">
+                                        <span
+                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-600/90 text-white text-[10px] font-bold rounded-full backdrop-blur-xs shadow-xs">
                                             <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
                                             Sisa {{ $availableCount }} Eks
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-800/80 text-white text-[10px] font-bold rounded-full backdrop-blur-xs shadow-xs">
+                                        <span
+                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-800/80 text-white text-[10px] font-bold rounded-full backdrop-blur-xs shadow-xs">
                                             <span class="w-1.5 h-1.5 bg-red-400 rounded-full"></span>
                                             Dipinjam
                                         </span>
@@ -157,7 +171,8 @@
                             <div>
                                 <div class="flex flex-wrap gap-1 mb-1.5">
                                     @forelse ($book->categories as $category)
-                                        <span class="bg-[#dcfce7] text-[#166534] text-[10px] font-bold px-2 py-0.5 rounded-md">
+                                        <span
+                                            class="bg-[#dcfce7] text-[#166534] text-[10px] font-bold px-2 py-0.5 rounded-md">
                                             {{ $category->name }}
                                         </span>
                                     @empty
@@ -165,7 +180,8 @@
                                     @endforelse
                                 </div>
 
-                                <h2 class="font-bold text-sm text-slate-900 group-hover:text-[#409a63] transition-colors line-clamp-2 leading-snug">
+                                <h2
+                                    class="font-bold text-sm text-slate-900 group-hover:text-[#409a63] transition-colors line-clamp-2 leading-snug">
                                     <a href="{{ route('member.books.show', $book) }}">
                                         {{ $book->title }}
                                     </a>
@@ -181,7 +197,7 @@
                                         'rating' => $book->averageRating(),
                                         'showScore' => true,
                                         'reviewsCount' => $book->reviewsCount(),
-                                        'size' => 'xs'
+                                        'size' => 'xs',
                                     ])
                                 </div>
                             </div>
